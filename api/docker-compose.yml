@@ -1,0 +1,20 @@
+version: '3'
+services:
+  host-injector:
+    container_name: host_c
+    volumes:
+      - '/var/run/docker.sock:/tmp/docker.sock'
+      - '/etc/hosts:/tmp/hosts'
+    image: dvdarias/docker-hoster
+  app:
+    hostname: app.wattotake.com
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/opt/api
+    container_name: app01
+    ports:
+      - "5000:5000"
+    command: python3 server.py
+    tty: true
