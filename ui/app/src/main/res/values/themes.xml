@@ -4,4 +4,13 @@
     <style name="Theme.Wat2Take" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/purple_700</item>
     </style>
+
+    <style name="Theme.Wat2Take.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Wat2Take.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Wat2Take.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
