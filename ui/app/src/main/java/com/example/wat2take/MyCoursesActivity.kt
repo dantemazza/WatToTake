@@ -1,14 +1,12 @@
 package com.example.wat2take
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,15 +15,19 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.wat2take.ui.theme.Wat2TakeTheme
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.json.JSONException
 import org.json.JSONObject
+import java.lang.reflect.Type
 
 class MyCoursesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,22 +51,21 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "co
 
 @Composable
 fun MyCoursesList() {
-    val course1 = JSONObject("{" +
+    val courseListJson: String = "[{\n" +
             "  \"id\": 0,\n" +
-            "  \"name\": \"ECE240\"," +
-            "  \"grade\": 51.2," +
-            "  \"title\": \"Circuits 2\"" +
-            "}")
-    val course2 = JSONObject("{" +
+            "  \"name\": \"ECE240\",\n" +
+            "  \"grade\": 51.2,\n" +
+            "  \"title\": \"Circuits 2\"\n" +
+            "},\n" +
+            "{\n" +
             "  \"id\": 1,\n" +
-            "  \"name\": \"ECE160\"," +
-            "  \"grade\": 62.3," +
-            "  \"title\": \"Electromagnetic Physics\"" +
-            "}")
-    val courses = listOf(
-        courseFromJSON(course1),
-        courseFromJSON(course2)
-    )
+            "  \"name\": \"ECE160\",\n" +
+            "  \"grade\": 62.3,\n" +
+            "  \"title\": \"Electromagnetic Physics\"\n" +
+            "}\n" +
+            "]"
+    val courses = parseCourseListJSON(courseListJson)
+
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
@@ -82,7 +83,9 @@ fun MyCoursesList() {
 @Composable
 fun CourseListItem(course: Course) {
     Card(
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp).fillMaxWidth(),
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .fillMaxWidth(),
         elevation = 2.dp,
         shape = RoundedCornerShape(corner = CornerSize(16.dp))
     ) {
@@ -108,18 +111,14 @@ fun CourseListItem(course: Course) {
 
 }
 
-fun courseFromJSON(jsonObject: JSONObject ): Course? {
-    return try {
-        val id = jsonObject.getInt("id")
-        val name = jsonObject.getString("name")
-        val grade = jsonObject.getDouble("grade")
-        val title = jsonObject.getString("title")
-
-        Course(id, name, grade, title)
-    } catch (e: JSONException) {
-        e.printStackTrace()
-        null
+fun parseCourseListJSON(json: String): List<Course> {
+    val gson = Gson()
+    val type: Type = object : TypeToken<List<Course?>?>() {}.type
+    val courseList: List<Course> = gson.fromJson(json, type)
+    for (course in courseList) {
+        Log.i("Course Details", course.name + "-" + course.title)
     }
+    return courseList
 }
 
 class Course(
