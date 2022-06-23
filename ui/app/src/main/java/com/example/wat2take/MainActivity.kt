@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.wat2take.ui.theme.Wat2TakeTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,8 +39,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyCoursesButton() {
     val context = LocalContext.current
-
+    val scope = rememberCoroutineScope()
+    val dataStore = TranscriptDataStore(context)
     Button(onClick = {
+        scope.launch {
+            dataStore.saveCourseList()
+        }
         context.startActivity(Intent(context, MyCoursesActivity::class.java))
     }) {
         Text(text = "My Courses")
