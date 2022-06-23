@@ -1,5 +1,6 @@
 package com.example.wat2take
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -19,7 +20,12 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.example.wat2take.ui.theme.Wat2TakeTheme
+import org.json.JSONException
+import org.json.JSONObject
 
 class MyCoursesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,21 +45,25 @@ class MyCoursesActivity : ComponentActivity() {
     }
 }
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "courses")
+
 @Composable
 fun MyCoursesList() {
-    val courses = listOf<Course>(
-        Course(
-            id = 0,
-            name = "ECE240",
-            grade = 51.2,
-            title = "Circuits 2"
-        ),
-        Course(
-            id = 1,
-            name = "ECE160",
-            grade = 62.3,
-            title = "Electromagnetic Physics"
-        )
+    val course1 = JSONObject("{" +
+            "  \"id\": 0,\n" +
+            "  \"name\": \"ECE240\"," +
+            "  \"grade\": 51.2," +
+            "  \"title\": \"Circuits 2\"" +
+            "}")
+    val course2 = JSONObject("{" +
+            "  \"id\": 1,\n" +
+            "  \"name\": \"ECE160\"," +
+            "  \"grade\": 62.3," +
+            "  \"title\": \"Electromagnetic Physics\"" +
+            "}")
+    val courses = listOf(
+        courseFromJSON(course1),
+        courseFromJSON(course2)
     )
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -61,7 +71,9 @@ fun MyCoursesList() {
         items(
             items = courses,
             itemContent = {
-                CourseListItem(course = it)
+                if (it != null) {
+                    CourseListItem(course = it)
+                }
             }
         )
     }
@@ -96,7 +108,21 @@ fun CourseListItem(course: Course) {
 
 }
 
-data class Course(
+fun courseFromJSON(jsonObject: JSONObject ): Course? {
+    return try {
+        val id = jsonObject.getInt("id")
+        val name = jsonObject.getString("name")
+        val grade = jsonObject.getDouble("grade")
+        val title = jsonObject.getString("title")
+
+        Course(id, name, grade, title)
+    } catch (e: JSONException) {
+        e.printStackTrace()
+        null
+    }
+}
+
+class Course(
     val id: Int,
     val name: String,
     val grade: Double,
