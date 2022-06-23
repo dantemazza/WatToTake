@@ -65,16 +65,14 @@ fun MyCoursesList() {
             "}\n" +
             "]"
     val courses = parseCourseListJSON(courseListJson)
-
+    val coursesBackToJson = courseListToJSON(courses)
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
         items(
             items = courses,
             itemContent = {
-                if (it != null) {
-                    CourseListItem(course = it)
-                }
+                CourseListItem(course = it)
             }
         )
     }
@@ -108,7 +106,6 @@ fun CourseListItem(course: Course) {
             }
         }
     }
-
 }
 
 fun parseCourseListJSON(json: String): List<Course> {
@@ -119,6 +116,14 @@ fun parseCourseListJSON(json: String): List<Course> {
         Log.i("Course Details", course.name + "-" + course.title)
     }
     return courseList
+}
+
+fun courseListToJSON(courses: List<Course>): String {
+    val gson = Gson()
+    val type: Type = object : TypeToken<List<Course?>?>() {}.type
+    val json = gson.toJson(courses, type)
+    Log.i("TO JSON Result: ", json)
+    return json
 }
 
 class Course(
