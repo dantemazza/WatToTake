@@ -25,12 +25,13 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.example.wat2take.ui.theme.Wat2TakeTheme
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import org.json.JSONException
+import org.json.JSONObject
 import java.lang.reflect.Type
 
 class MyCoursesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_my_courses)
         setContent {
             Wat2TakeTheme {
@@ -124,3 +125,10 @@ fun courseListToJSON(courses: List<Course>): String {
     Log.i("TO JSON Result: ", json)
     return json
 }
+
+class Course(
+    val id: Int,
+    val name: String,
+    val grade: Double,
+    val title: String
+)
