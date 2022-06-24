@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/opt/api
-    container_name: app01
+    container_name: wat_container
     ports:
       - "5000:5000"
     command: python3 server.py
