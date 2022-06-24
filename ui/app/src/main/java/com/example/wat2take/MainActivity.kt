@@ -42,13 +42,10 @@ fun MyCoursesButton() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val dataStore = TranscriptDataStore(context)
-    LaunchedEffect(Unit) {
-        dataStore.saveCourseList()
-    }
     Button(onClick = {
-//        scope.launch {
-//            dataStore.saveCourseList()
-//        }
+        scope.launch {
+            dataStore.saveCourseList()
+        }
         context.startActivity(Intent(context, MyCoursesActivity::class.java))
     }) {
         Text(text = "My Courses")
