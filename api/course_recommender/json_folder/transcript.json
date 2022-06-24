@@ -1,0 +1,31 @@
+[{
+	"Course": "ECE 452",
+	"Description": "Software  Design  and Architectures",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 454",
+	"Description": "Distributed  Computing",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 498",
+	"Description": "A  Engineering  Design  Project",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECON 101",
+	"Description": "Introduction to  Microeconomics",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "REC 100",
+	"Description": "Introduction to the  Study of  Recreation  and  Leisure",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}]

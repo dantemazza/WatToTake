@@ -1,0 +1,23 @@
+[{
+    "Course": "ECE 452",
+    "ElectiveType": "4th year TE"
+}, {
+    "Course": "ECE 454",
+    "ElectiveType": "4th year TE"
+}, {
+    "Course": "ECE 498",
+    "ElectiveType": "FYDP"
+}, {
+    "Course": "ECON 101",
+    "ElectiveType": "List C CSE"
+}, {
+    "Course": "REC 100",
+    "ElectiveType": "List D CSE"
+},
+
+
+{
+    "Course": "BIOL 110",
+    "ElectiveType": "NSE"
+}
+]
