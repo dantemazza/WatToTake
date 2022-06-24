@@ -79,6 +79,7 @@ fun MyCoursesList() {
 
     val courses = parseCourseListJSON(courseListJsonOLD)
     val coursesBackToJson = courseListToJSON(courses)
+
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {

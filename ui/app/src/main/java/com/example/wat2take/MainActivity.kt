@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,10 +42,13 @@ fun MyCoursesButton() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val dataStore = TranscriptDataStore(context)
+    LaunchedEffect(Unit) {
+        dataStore.saveCourseList()
+    }
     Button(onClick = {
-        scope.launch {
-            dataStore.saveCourseList()
-        }
+//        scope.launch {
+//            dataStore.saveCourseList()
+//        }
         context.startActivity(Intent(context, MyCoursesActivity::class.java))
     }) {
         Text(text = "My Courses")
