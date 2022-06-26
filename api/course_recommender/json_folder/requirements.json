@@ -14,9 +14,6 @@
     "ElectiveType": "List A/B/C/D CSE",
     "NumRequired": "2"
 }, {
-    "ElectiveType": "List D CSE",
-    "NumRequired": "1"
-}, {
     "ElectiveType": "3B TE",
     "NumRequired": "3"
 }

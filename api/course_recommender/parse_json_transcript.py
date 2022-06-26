@@ -55,9 +55,13 @@ def parse_json(requirements_json, transcript_json, courses_json):
     print(requirementsDict)
     print(counterDict)
 
-    print("Number of TEs left:" + str(check_TE(requirementsDict, counterDict)))
-    print("Number of [List1NSE, List2NSE] left:" + str(check_NSE(requirementsDict, counterDict)))
-    print("Number of Total CSEs, List C CSE, List D CSE left:" + str(check_CSE(requirementsDict, counterDict)))
+    TE_requirements = json.dumps(check_TE(requirementsDict, counterDict))
+    NSE_requirements = check_NSE(requirementsDict, counterDict)
+    CSE_requirements = check_CSE(requirementsDict, counterDict)
+    print(type(TE_requirements))
+    # print("Number of TEs left:" + str(TE_requirements))
+    # print("Number of [List1NSE, List2NSE] left:" + str(NSE_requirements))
+    # print("Number of Total CSEs, List C CSE, List D CSE left:" + str(CSE_requirements))
     
     return
 
