@@ -12,13 +12,14 @@ import kotlinx.coroutines.flow.map
 class TranscriptDataStore(private val context: Context) {
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("courseList")
+        const val DEFAULT_COURSES_VAL = "[]"
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
     }
 
     //get course list
-    val getCourseList: Flow<String?> = context.dataStore.data
+    val getCourseList: Flow<String> = context.dataStore.data
         .map { preferences ->
-            preferences[COURSE_LIST_KEY] ?: "no courses";
+            preferences[COURSE_LIST_KEY] ?: DEFAULT_COURSES_VAL;
         }
 
     //save course list into datastore

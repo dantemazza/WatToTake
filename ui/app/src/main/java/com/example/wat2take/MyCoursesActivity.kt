@@ -73,9 +73,9 @@ fun MyCoursesList() {
             "]"
     val context = LocalContext.current
     val dataStore = TranscriptDataStore(context)
-    var courseListJson = dataStore.getCourseList.collectAsState(initial = "").value?:"";
-
-    Log.i("STORE", courseListJson);
+    var courseListJson = dataStore.getCourseList.collectAsState(
+        initial = TranscriptDataStore.DEFAULT_COURSES_VAL
+    ).value;
 
     val courses = parseCourseListJSON(courseListJsonOLD)
     val coursesBackToJson = courseListToJSON(courses)
