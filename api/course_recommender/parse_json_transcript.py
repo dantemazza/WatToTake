@@ -2,8 +2,6 @@ import json
 from collections import defaultdict
 from lib2to3.pgen2.pgen import DFAState
 
-from pydantic import Json
-
 ### CONSTANTS ###
 
 COURSE_NAME = "Course"
