@@ -17,8 +17,8 @@ LIST_B_CSE = "List B CSE"
 LIST_C_CSE = "List C CSE"
 LIST_D_CSE = "List D CSE"
 LIST_ABCD_CSE = "List A/B/C/D CSE"
-COURSE_JSON = "./json_folder/courses.json"
-REQUIREMENT_JSON = "./json_folder/requirements.json"
+COURSE_JSON = "/opt/api/course_recommender/json_folder/courses.json"
+REQUIREMENT_JSON = "/opt/api/course_recommender/json_folder/requirements.json"
 ##################
 
 #parse json and output number of courses left to take
@@ -30,8 +30,7 @@ def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, cou
 
     #load transcript
     transcriptDict = {}
-    with open(transcript_json) as f:
-        transcriptList = json.load(f)
+    transcriptList = transcript_json
     for course in transcriptList:
         transcriptDict[course[COURSE_NAME]] = course
     
@@ -70,7 +69,7 @@ def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, cou
     returnDict["CSE Requirements"] = str(cse)
     returnDict["CSE Recommendations"] = str(recommend_CSE(transcriptDict, courseDict, cse))
     print(json.dumps(returnDict))
-    return json.dumps(returnDict)
+    return returnDict
 
 #determine whether course was passed or failed
 def pass_or_fail(course):
