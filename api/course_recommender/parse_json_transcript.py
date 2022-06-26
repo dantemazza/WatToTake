@@ -1,5 +1,8 @@
 import json
 from collections import defaultdict
+from lib2to3.pgen2.pgen import DFAState
+
+from pydantic import Json
 
 ### CONSTANTS ###
 
@@ -11,27 +14,30 @@ EARNED = "Earned"
 DESCRIPTION = "Description"
 GRADE = "Grade"
 FOURTH_YEAR_TE = "4th year TE"
-LIST_1_NSE = "List 1 NSE"
-LIST_2_NSE = "List 2 NSE"
+NSE = "NSE"
 LIST_A_CSE = "List A CSE"
 LIST_B_CSE = "List B CSE"
 LIST_C_CSE = "List C CSE"
 LIST_D_CSE = "List D CSE"
-LIST_ABCD_CSE ="List A/B/C/D CSE"
-
+LIST_ABCD_CSE = "List A/B/C/D CSE"
+COURSE_JSON = "./json_folder/courses.json"
+REQUIREMENT_JSON = "./json_folder/requirements.json"
 ##################
 
 #parse json and output number of courses left to take
-def parse_json(requirements_json, transcript_json, courses_json):
+def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, courses_json=COURSE_JSON):
     '''
     input: requirments json file path, transcript json file path, course json file path
     output: number of TE, CSE, NSE left to take
     '''
 
     #load transcript
+    transcriptDict = {}
     with open(transcript_json) as f:
-        transcriptDict = json.load(f)
-
+        transcriptList = json.load(f)
+    for course in transcriptList:
+        transcriptDict[course[COURSE_NAME]] = course
+    
     #load requirements
     requirementsDict = {}
     with open(requirements_json) as f:
@@ -48,22 +54,26 @@ def parse_json(requirements_json, transcript_json, courses_json):
 
     #count number of each elective type taken, store in counterDict
     counterDict = initialize_dict()
-    for course in transcriptDict:
-        if pass_or_fail(course):
-            course_type = lookup_course(course, courseDict)
+    for course in transcriptDict.keys():
+        if pass_or_fail(transcriptDict[course]):
+            course_type = lookup_course(transcriptDict[course], courseDict)
             counterDict[course_type] += 1
-    print(requirementsDict)
-    print(counterDict)
-
-    TE_requirements = json.dumps(check_TE(requirementsDict, counterDict))
-    NSE_requirements = check_NSE(requirementsDict, counterDict)
-    CSE_requirements = check_CSE(requirementsDict, counterDict)
-    print(type(TE_requirements))
-    # print("Number of TEs left:" + str(TE_requirements))
-    # print("Number of [List1NSE, List2NSE] left:" + str(NSE_requirements))
-    # print("Number of Total CSEs, List C CSE, List D CSE left:" + str(CSE_requirements))
-    
-    return
+        
+    returnDict = {}
+    #get te requirements and recommendations
+    te = check_E(requirementsDict, counterDict, FOURTH_YEAR_TE)
+    returnDict["TE Requirements"] = str(te)
+    returnDict["TE Recommendations"] = str(recommend_E(transcriptDict, courseDict, te, FOURTH_YEAR_TE))
+    #get nse requirements and recommendations
+    nse = check_E(requirementsDict, counterDict, NSE)
+    returnDict["NSE Requirements"] = str(nse)
+    returnDict["NSE Recommendations"] = str(recommend_E(transcriptDict, courseDict, nse, NSE))
+    #get cse requirements and recommendations
+    cse = check_CSE(requirementsDict, counterDict)
+    returnDict["CSE Requirements"] = str(cse)
+    returnDict["CSE Recommendations"] = str(recommend_CSE(transcriptDict, courseDict, cse))
+    print(json.dumps(returnDict))
+    return json.dumps(returnDict)
 
 #determine whether course was passed or failed
 def pass_or_fail(course):
@@ -71,7 +81,10 @@ def pass_or_fail(course):
     input: course entry in dictionary
     output: True or False, True = passed
     '''
-    return True if course[ATTEMPTED] == course[EARNED] else False
+    if ATTEMPTED in course.keys():
+        return True if course[ATTEMPTED] == course[EARNED] else False
+    else:
+        return True
 
 #return elective type of course
 def lookup_course(course, course_lookup_dict):
@@ -83,41 +96,57 @@ def lookup_course(course, course_lookup_dict):
     if course_name in course_lookup_dict:
         return course_lookup_dict[course_name]
     else:
-        raise Exception("course name doesn't exist in list of available courses")
+        return ""
 
-def check_TE(requirements, taken_courses):
-    diff = requirements[FOURTH_YEAR_TE] - taken_courses[FOURTH_YEAR_TE]
-    return diff if requirements[FOURTH_YEAR_TE] > taken_courses[FOURTH_YEAR_TE] else 0
-
-def check_NSE(requirements, taken_courses):
-    List1diff = requirements[LIST_1_NSE] - taken_courses[LIST_1_NSE]
-    List2diff = requirements[LIST_2_NSE] - taken_courses[LIST_2_NSE]
-    if List1diff > 0 and List2diff > 0:
-        return [[List1diff, List2diff]]
-    elif List1diff > 0:
-        return [[List1diff, 0]]
-    else:
-        #List 1 NSE => List 2 NSE
-        return [[0, List2diff], [List2diff, 0]]
+def check_E(requirements, taken_courses, elective_type):
+    diff = requirements[elective_type] - taken_courses[elective_type]
+    return diff if requirements[elective_type] > taken_courses[elective_type] else 0
 
 def check_CSE(requirements, taken_courses):
     ListCdiff = requirements[LIST_C_CSE] - taken_courses[LIST_C_CSE]
-    ListDdiff = requirements[LIST_D_CSE] - taken_courses[LIST_D_CSE]
     ListABCDdiff = requirements[LIST_ABCD_CSE] - taken_courses[LIST_A_CSE] 
     - taken_courses[LIST_B_CSE] - taken_courses[LIST_C_CSE] - taken_courses[LIST_D_CSE]
 
     #2 List D CSE => 1 List C CSE
-    if ListDdiff <= -2:
-        ListDdiff += 2
+    if taken_courses[LIST_D_CSE] >= 2:
         ListCdiff -= 1
 
-    return ListABCDdiff, ListCdiff, ListDdiff
+    return [ListABCDdiff, ListCdiff]
+
+def recommend_E(taken_courses, total_courses, num_left, course_type):
+    recommendations = []
+    for course in total_courses:
+        if num_left > 0 and course not in taken_courses and total_courses[course] == course_type:
+            print(str(course))
+            recommendations.append(course)
+            num_left -= 1
+    return recommendations
+
+def recommend_CSE(taken_courses, total_courses, num_left):
+    listCLeft = num_left[0]
+    totalLeft = num_left[1]
+    listCRecommendations = []
+    totalRecommendations = []
+    for course in total_courses:
+        if (listCLeft > 0 or totalLeft > 0) and course not in taken_courses:
+            if listCLeft > 0 and total_courses[course] == LIST_C_CSE:
+                print(str(course))
+                listCRecommendations.append(course)
+                if totalLeft > 0:
+                    totalRecommendations.append(course) 
+                    totalLeft -= 1
+                listCLeft -= 1
+            elif totalLeft > 0 and (total_courses[course] == LIST_A_CSE or 
+            total_courses[course] == LIST_B_CSE or total_courses[course] == LIST_D_CSE):
+                print(str(course))
+                totalRecommendations.append(course)
+                totalLeft -= 1
+    return [listCRecommendations, totalRecommendations]
 
 def initialize_dict():
     emptyDict = defaultdict(int) 
     emptyDict[FOURTH_YEAR_TE] 
-    emptyDict[LIST_1_NSE]
-    emptyDict[LIST_2_NSE]
+    emptyDict[NSE]
     emptyDict[LIST_A_CSE]
     emptyDict[LIST_B_CSE]
     emptyDict[LIST_C_CSE]
@@ -128,7 +157,5 @@ def initialize_dict():
 
 
 if __name__ == '__main__':
-    requirements = './json_folder/requirements.json'
     transcript = './json_folder/transcript.json'
-    courses = './json_folder/courses.json'
-    parse_json(requirements, transcript, courses)
+    get_recommendations(transcript)

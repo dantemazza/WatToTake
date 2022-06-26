@@ -5,6 +5,15 @@
     "Course": "ECE 454",
     "ElectiveType": "4th year TE"
 }, {
+    "Course": "ECE 457C",
+    "ElectiveType": "4th year TE"
+}, {
+    "Course": "ECE 458",
+    "ElectiveType": "4th year TE"
+}, {
+    "Course": "ECE 457A",
+    "ElectiveType": "4th year TE"
+}, {
     "Course": "ECE 498",
     "ElectiveType": "FYDP"
 }, {
@@ -13,11 +22,20 @@
 }, {
     "Course": "REC 100",
     "ElectiveType": "List D CSE"
-},
-
-
-{
+}, {
     "Course": "BIOL 110",
     "ElectiveType": "NSE"
+} , {
+    "Course": "CHEM 209",
+    "ElectiveType": "NSE"
+} , {
+    "Course": "ARTS 490",
+    "ElectiveType": "List C CSE"
+}, {
+    "Course": "AE 392",
+    "ElectiveType": "List B CSE"
+}, {
+    "Course": "FR 297",
+    "ElectiveType": "List C CSE"
 }
 ]
