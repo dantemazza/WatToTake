@@ -1,5 +1,6 @@
 package com.example.wat2take
 
+import android.content.Context
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,20 +13,25 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import net.gotev.uploadservice.protocols.multipart.MultipartUploadRequest
 
 @Composable
 fun UploadTranscript(navController: NavController) {
+    val context = LocalContext.current
     val pickFileLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { fileUri ->
         if (fileUri != null) {
             // Update the state with the Uri
             Log.i("URI", fileUri.toString())
+            onFilePicked(fileUri.toString(), context)
+            navController.navigate("myCourses")
         }
     }
 
@@ -52,3 +58,13 @@ fun UploadTranscript(navController: NavController) {
         }
     }
 }
+
+fun onFilePicked(filePath: String, context: Context) {
+    MultipartUploadRequest(context, serverUrl = "https://ptsv2.com/t/qhdnd-1656283324/post")
+        .setMethod("POST")
+        .addFileToUpload(
+            filePath = filePath,
+            parameterName = "myFile"
+        ).startUpload()
+}
+

@@ -44,6 +44,11 @@ fun Home(navController: NavController) {
             }) {
                 Text(text = "Upload my transcript", fontSize = 18.sp)
             }
+            Button(onClick = {
+                navController.navigate("myCourses");
+            }) {
+                Text(text = "Go to my courses", fontSize = 18.sp)
+            }
         }
     }
 }
