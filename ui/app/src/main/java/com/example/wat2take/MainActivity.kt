@@ -3,11 +3,7 @@ package com.example.wat2take
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -29,6 +25,7 @@ fun Main() {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home") {
         composable("home") { Home(navController) }
-        composable("myCourses") { MyCoursesList(navController) }
+        composable("myCourses") { MyCoursesList(navController)}
+        composable("uploadTranscript") { UploadTranscript(navController) }
     }
 }
