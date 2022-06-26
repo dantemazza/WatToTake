@@ -1,0 +1,18 @@
+[{
+    "ElectiveType": "4th year TE",
+    "NumRequired": "5"
+}, {
+    "ElectiveType": "NSE",
+    "NumRequired": "2"
+}, {
+    "ElectiveType": "List C CSE",
+    "NumRequired": "2"
+}, {
+    "ElectiveType": "List A/B/C/D CSE",
+    "NumRequired": "2"
+}, {
+    "ElectiveType": "3B TE",
+    "NumRequired": "3"
+}
+
+]

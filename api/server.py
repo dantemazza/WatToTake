@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from transcript_parser.extract import transcript_to_json, fan_out
+from course_recommender.parse_json_transcript import get_recommendations
 app = Flask(__name__)
 
 @app.route('/transcript', methods = ['POST'])
@@ -16,7 +17,9 @@ def transcript_parser():
     if file and file.filename.split(".")[-1].lower() == "pdf":
         file_path = fan_out(file)
         result = transcript_to_json(file_path)
-        resp = jsonify(result)
+        recommendations = get_recommendations(result)
+        response = {"courses": result, "recommendations": recommendations}
+        resp = jsonify(response)
         resp.status_code = 200
         return resp
     else:

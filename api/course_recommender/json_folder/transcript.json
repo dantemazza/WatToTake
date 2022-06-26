@@ -1,0 +1,238 @@
+[{
+	"Course": "CHE 100",
+	"Description": "Chemical  Engineering  Concepts  1",
+	"Attempted": "0.75",
+	"Earned": "0.75",
+	"Grade": "REDACTED"
+}, {
+	"Course": "CHE 102",
+	"Description": "Chemistry for  Engineers",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "MATH 115",
+	"Description": "Linear Algebra for Engineering",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "MATH 116",
+	"Description": "Calculus  1  for Engineering",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "PHYS 115",
+	"Description": "Mechanics",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 106",
+	"Description": "Electricity and  Magnetism",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 108",
+	"Description": "Discrete  Mathematics and  Logic  1",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 124",
+	"Description": "Digital  Circuits and  Systems",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 140",
+	"Description": "Linear Circuits",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 192",
+	"Description": "Engineering  Economics and  Impact on  Society",
+	"Attempted": "0.25",
+	"Earned": "0.25",
+	"Grade": "REDACTED"
+}, {
+	"Course": "MATH 119",
+	"Description": "Calculus 2 for Engineering",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 150",
+	"Description": "Fundamentals of  Programming",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 109",
+	"Description": "Materials Chemistry for Engineers",
+	"Attempted": "0.25",
+	"Earned": "0.25",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 204",
+	"Description": "Numerical  Methods",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 205",
+	"Description": "Advanced  Calculus  1  for  Electrical  and  Computer",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 222",
+	"Description": "Digital  Computers",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 240",
+	"Description": "Electronic Circuits  1",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 250",
+	"Description": "Algorithms and  Data Structures",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "WKRPT 201",
+	"Description": "Work-term  Report",
+	"Attempted": "0.13",
+	"Earned": "0.13",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 203",
+	"Description": "Probability Theory and  Statistics  1",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 207",
+	"Description": "Signals and  Systems",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 208",
+	"Description": "Discrete  Mathematics and  Logic 2",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 224",
+	"Description": "Embedded  Microprocessor Systems",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 252",
+	"Description": "Systems  Programming  and Concurrency",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ITAL 101",
+	"Description": "Introduction to  Italian  Language  1",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "WKRPT 301",
+	"Description": "Work-term  Report",
+	"Attempted": "0.13",
+	"Earned": "0.13",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 298",
+	"Description": "Instrumentation  and  Prototyping  Laboratory",
+	"Attempted": "0.25",
+	"Earned": "0.25",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 318",
+	"Description": "Communication  Systems  1",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 327",
+	"Description": "Digital  Hardware  Systems",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 350",
+	"Description": "Real-Time Operating  Systems",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 380",
+	"Description": "Analog  Control  Systems",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "WKRPT 401",
+	"Description": "Work-term  Report",
+	"Attempted": "0.13",
+	"Earned": "0.13",
+	"Grade": "REDACTED"
+}, {
+	"Course": "CLAS 104",
+	"Description": "Classical  Mythology",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 307",
+	"Description": "Probability Theory and  Statistics 2",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 320",
+	"Description": "Computer Architecture",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 351",
+	"Description": "Compilers",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 358",
+	"Description": "Computer Networks",
+	"Attempted": "0.50",
+	"Earned": "0.50",
+	"Grade": "REDACTED"
+}, {
+	"Course": "ECE 452",
+	"Description": "Software  Design  and Architectures"
+}, {
+	"Course": "ECE 454",
+	"Description": "Distributed  Computing"
+}, {
+	"Course": "ECE 498",
+	"Description": "A  Engineering  Design  Project"
+}, {
+	"Course": "ECON 101",
+	"Description": "Introduction to  Microeconomics"
+}, {
+	"Course": "REC 100",
+	"Description": "Introduction to the  Study of  Recreation  and  Leisure"
+}]
