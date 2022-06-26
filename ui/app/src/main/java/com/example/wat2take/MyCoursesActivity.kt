@@ -54,31 +54,15 @@ class MyCoursesActivity : ComponentActivity() {
     }
 }
 
-//val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "courses")
-
 @Composable
 fun MyCoursesList() {
-    val courseListJsonOLD: String = "[{\n" +
-            "  \"id\": 0,\n" +
-            "  \"name\": \"ECE240\",\n" +
-            "  \"grade\": 51.2,\n" +
-            "  \"title\": \"Circuits 2\"\n" +
-            "},\n" +
-            "{\n" +
-            "  \"id\": 1,\n" +
-            "  \"name\": \"ECE160\",\n" +
-            "  \"grade\": 62.3,\n" +
-            "  \"title\": \"Electromagnetic Physics\"\n" +
-            "}\n" +
-            "]"
     val context = LocalContext.current
     val dataStore = TranscriptDataStore(context)
     var courseListJson = dataStore.getCourseList.collectAsState(
         initial = TranscriptDataStore.DEFAULT_COURSES_VAL
     ).value;
 
-    val courses = parseCourseListJSON(courseListJsonOLD)
-    val coursesBackToJson = courseListToJSON(courses)
+    val courses = parseCourseListJSON(courseListJson)
 
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -126,9 +110,6 @@ fun parseCourseListJSON(json: String): List<Course> {
     val gson = Gson()
     val type: Type = object : TypeToken<List<Course?>?>() {}.type
     val courseList: List<Course> = gson.fromJson(json, type)
-    for (course in courseList) {
-//        Log.i("Course Details", course.name + "-" + course.title)
-    }
     return courseList
 }
 
@@ -136,13 +117,5 @@ fun courseListToJSON(courses: List<Course>): String {
     val gson = Gson()
     val type: Type = object : TypeToken<List<Course?>?>() {}.type
     val json = gson.toJson(courses, type)
-//    Log.i("TO JSON Result: ", json)
     return json
 }
-
-//class Course(
-//    val id: Int,
-//    val name: String,
-//    val grade: Double,
-//    val title: String
-//)
