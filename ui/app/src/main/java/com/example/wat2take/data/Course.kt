@@ -2,7 +2,7 @@ package com.example.wat2take.data
 
 data class Course(
     val id: Int,
-    val name: String,
+    val Course: String,
     val grade: Double,
-    val title: String
+    val Description: String
 )

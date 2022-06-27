@@ -18,7 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
+import net.gotev.uploadservice.observer.request.RequestObserver
 import net.gotev.uploadservice.protocols.multipart.MultipartUploadRequest
 
 @Composable
@@ -60,11 +62,11 @@ fun UploadTranscript(navController: NavController) {
 }
 
 fun onFilePicked(filePath: String, context: Context) {
-    MultipartUploadRequest(context, serverUrl = "https://ptsv2.com/t/qhdnd-1656283324/post")
+    MultipartUploadRequest(context, serverUrl = "https://025f-192-159-178-206.ngrok.io/transcript")
         .setMethod("POST")
         .addFileToUpload(
             filePath = filePath,
-            parameterName = "myFile"
+            parameterName = "file"
         ).startUpload()
 }
 

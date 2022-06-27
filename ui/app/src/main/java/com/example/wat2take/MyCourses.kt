@@ -1,5 +1,6 @@
 package com.example.wat2take
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -57,8 +58,8 @@ fun CourseListItem(course: Course) {
                 .align(Alignment.CenterVertically)
                 .weight(2f)
             ) {
-                Text(text = course.name, style = typography.h6)
-                Text(text = course.title, style = typography.caption)
+                Text(text = course.Course, style = typography.h6)
+                Text(text = course.Description, style = typography.caption)
             }
             Column(modifier = Modifier
                 .padding(16.dp)
@@ -66,16 +67,19 @@ fun CourseListItem(course: Course) {
                 horizontalAlignment = Alignment.End
 
             ) {
-                Text(text = "Grade: " + course.grade, style = typography.body1)
+                // Text(text = "Grade: " + course.grade, style = typography.body1)
+                Text(text = "Grade: XXX", style = typography.body1)
             }
         }
     }
 }
 
 fun parseCourseListJSON(json: String): List<Course> {
+    // Log.i("STRING: ", json)
     val gson = Gson()
     val type: Type = object : TypeToken<List<Course?>?>() {}.type
     val courseList: List<Course> = gson.fromJson(json, type)
+    // Log.i("", courseList.toString())
     return courseList
 }
 
