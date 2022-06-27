@@ -17,8 +17,8 @@ LIST_B_CSE = "List B CSE"
 LIST_C_CSE = "List C CSE"
 LIST_D_CSE = "List D CSE"
 LIST_ABCD_CSE = "List A/B/C/D CSE"
-COURSE_JSON = "/opt/api/course_recommender/json_folder/courses.json"
-REQUIREMENT_JSON = "/opt/api/course_recommender/json_folder/requirements.json"
+COURSE_JSON = "course_recommender/json_folder/courses.json"
+REQUIREMENT_JSON = "course_recommender/json_folder/requirements.json"
 ##################
 
 #parse json and output number of courses left to take
