@@ -23,7 +23,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") { Login(navController) }
         composable("home") { Home(navController) }
         composable("myCourses") { MyCoursesList(navController)}
         composable("uploadTranscript") { UploadTranscript(navController) }
