@@ -27,7 +27,7 @@ fun Home(navController: NavController) {
     ){
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.widthIn(0.dp, 350.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
                 text = "Welcome to Wat2Take!",
@@ -37,9 +37,11 @@ fun Home(navController: NavController) {
                 fontWeight = FontWeight.Bold
             )
             Button(onClick = {
-                scope.launch {
-                    dataStore.saveCourseList()
-                }
+                navController.navigate("uploadTranscript");
+            }) {
+                Text(text = "Upload my transcript", fontSize = 18.sp)
+            }
+            Button(onClick = {
                 navController.navigate("myCourses");
             }) {
                 Text(text = "Go to my courses", fontSize = 18.sp)

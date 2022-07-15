@@ -23,23 +23,14 @@ class TranscriptDataStore(private val context: Context) {
         }
 
     //save course list into datastore
-    suspend fun saveCourseList() {
-        val courseList: String = "[{\n" +
-                "  \"id\": 0,\n" +
-                "  \"name\": \"ECE240\",\n" +
-                "  \"grade\": 51.2,\n" +
-                "  \"title\": \"Circuits 2\"\n" +
-                "},\n" +
-                "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"ECE160\",\n" +
-                "  \"grade\": 62.3,\n" +
-                "  \"title\": \"Electromagnetic Physics\"\n" +
-                "}\n" +
-                "]"
+    suspend fun saveCourseList(courseJson: String) {
+        context.dataStore.edit { it.clear() }
         context.dataStore.edit { preferences ->
-            preferences[COURSE_LIST_KEY] = courseList
+            preferences[COURSE_LIST_KEY] = courseJson
         }
     }
 
+    suspend fun clearCourses(){
+        context.dataStore.edit { it.clear() }
+    }
 }
