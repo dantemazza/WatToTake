@@ -5,6 +5,8 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -24,10 +26,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.gson.JsonParser
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
+import org.json.JSONArray
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -49,7 +53,6 @@ fun UploadTranscript(navController: NavController) {
     }
 
     val context = LocalContext.current
-
 
     val pickFileLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
@@ -171,9 +174,15 @@ fun sendFile(filePath: String) {
                     println("$name: $value")
                 }
 
-                Log.i("RESPONSE", response.body!!.string())
+                val responseBody = response.body!!.string()
+                Log.i("RESPONSE", responseBody)
+                val responseBodyJSON = JsonParser().parse(responseBody).asJsonObject
+                Log.i("Response Json", responseBodyJSON.toString())
+                val courseListJson = responseBodyJSON.getAsJsonArray("courses")
+                Log.i("Response JSON", courseListJson.toString())
             }
         }
     })
 }
+
 
