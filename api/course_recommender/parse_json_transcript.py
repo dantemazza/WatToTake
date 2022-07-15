@@ -59,15 +59,15 @@ def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, cou
     #get te requirements and recommendations
     te = check_E(requirementsDict, counterDict, FOURTH_YEAR_TE)
     returnDict["TE Requirements"] = str(te)
-    returnDict["TE Recommendations"] = str(recommend_E(transcriptDict, courseDict, te, FOURTH_YEAR_TE))
+    returnDict["TE Recommendations"] = recommend_E(transcriptDict, courseDict, te, FOURTH_YEAR_TE)
     #get nse requirements and recommendations
     nse = check_E(requirementsDict, counterDict, NSE)
     returnDict["NSE Requirements"] = str(nse)
-    returnDict["NSE Recommendations"] = str(recommend_E(transcriptDict, courseDict, nse, NSE))
+    returnDict["NSE Recommendations"] = recommend_E(transcriptDict, courseDict, nse, NSE)
     #get cse requirements and recommendations
-    cse = check_CSE(requirementsDict, counterDict)
-    returnDict["CSE Requirements"] = str(cse)
-    returnDict["CSE Recommendations"] = str(recommend_CSE(transcriptDict, courseDict, cse))
+    listCCSE,  totalCSE = check_CSE(requirementsDict, counterDict)
+    returnDict["List C CSE Requirements"] , returnDict["Total CSE Requirements"] = listCCSE, totalCSE
+    returnDict["List C CSE Recommendations"] , returnDict["Total CSE Recommendations"] = recommend_CSE(transcriptDict, courseDict, listCCSE, totalCSE)
     print(json.dumps(returnDict))
     return returnDict
 
@@ -107,26 +107,22 @@ def check_CSE(requirements, taken_courses):
     if taken_courses[LIST_D_CSE] >= 2:
         ListCdiff -= 1
 
-    return [ListABCDdiff, ListCdiff]
+    return ListABCDdiff, ListCdiff
 
 def recommend_E(taken_courses, total_courses, num_left, course_type):
     recommendations = []
     for course in total_courses:
         if num_left > 0 and course not in taken_courses and total_courses[course] == course_type:
-            print(str(course))
             recommendations.append(course)
             num_left -= 1
     return recommendations
 
-def recommend_CSE(taken_courses, total_courses, num_left):
-    listCLeft = num_left[0]
-    totalLeft = num_left[1]
+def recommend_CSE(taken_courses, total_courses, listCLeft, totalLeft):
     listCRecommendations = []
     totalRecommendations = []
     for course in total_courses:
         if (listCLeft > 0 or totalLeft > 0) and course not in taken_courses:
             if listCLeft > 0 and total_courses[course] == LIST_C_CSE:
-                print(str(course))
                 listCRecommendations.append(course)
                 if totalLeft > 0:
                     totalRecommendations.append(course) 
@@ -134,10 +130,9 @@ def recommend_CSE(taken_courses, total_courses, num_left):
                 listCLeft -= 1
             elif totalLeft > 0 and (total_courses[course] == LIST_A_CSE or 
             total_courses[course] == LIST_B_CSE or total_courses[course] == LIST_D_CSE):
-                print(str(course))
                 totalRecommendations.append(course)
                 totalLeft -= 1
-    return [listCRecommendations, totalRecommendations]
+    return listCRecommendations, totalRecommendations
 
 def initialize_dict():
     emptyDict = defaultdict(int) 
@@ -154,4 +149,6 @@ def initialize_dict():
 
 if __name__ == '__main__':
     transcript = './json_folder/transcript.json'
-    get_recommendations(transcript)
+    with open(transcript) as f: 
+        transcriptList = json.load(f)
+    get_recommendations(transcriptList, "./json_folder/requirements.json", "./json_folder/courses.json")
