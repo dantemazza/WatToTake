@@ -37,17 +37,11 @@ fun Home(navController: NavController) {
                 fontWeight = FontWeight.Bold
             )
             Button(onClick = {
-                scope.launch {
-                    dataStore.saveCourseList()
-                }
                 navController.navigate("uploadTranscript");
             }) {
                 Text(text = "Upload my transcript", fontSize = 18.sp)
             }
             Button(onClick = {
-                scope.launch {
-                    dataStore.saveCourseList()
-                }
                 navController.navigate("myCourses");
             }) {
                 Text(text = "Go to my courses", fontSize = 18.sp)

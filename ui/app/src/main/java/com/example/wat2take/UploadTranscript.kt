@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.gson.JsonParser
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
@@ -35,6 +37,8 @@ import org.json.JSONArray
 import java.io.File
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.suspendCoroutine
 
 
 @Composable
@@ -54,6 +58,8 @@ fun UploadTranscript(navController: NavController) {
 
     val context = LocalContext.current
 
+    val dataStore = TranscriptDataStore(context)
+
     val pickFileLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.OpenDocument()
     ) { fileUri ->
@@ -71,11 +77,11 @@ fun UploadTranscript(navController: NavController) {
                 Log.i("Update", "Received file name: $fileName")
                 val filePath = "$storagePath/Download/$fileName"
                 Log.i("Update", "File Path: $filePath")
-                sendFile(filePath)
+                sendFile(filePath, dataStore)
             } else {
                 // Toast file not found
             }
-            navController.navigate("myCourses")
+            //navController.navigate("myCourses")
         }
     }
 
@@ -141,8 +147,12 @@ fun getFileData(uri: Uri, context: Context) : String {
     return ""
 }
 
-fun sendFile(filePath: String) {
-    val client = OkHttpClient()
+fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
+    val client = OkHttpClient.Builder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .build();
 
     val file = File(filePath)
     val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
@@ -180,6 +190,9 @@ fun sendFile(filePath: String) {
                 Log.i("Response Json", responseBodyJSON.toString())
                 val courseListJson = responseBodyJSON.getAsJsonArray("courses")
                 Log.i("Response JSON", courseListJson.toString())
+                GlobalScope.launch {
+                    dataStore.saveCourseList(courseListJson.toString())
+                }
             }
         }
     })
