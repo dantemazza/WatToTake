@@ -29,4 +29,8 @@ class TranscriptDataStore(private val context: Context) {
             preferences[COURSE_LIST_KEY] = courseJson
         }
     }
+
+    suspend fun clearCourses(){
+        context.dataStore.edit { it.clear() }
+    }
 }

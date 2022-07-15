@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
@@ -19,6 +20,8 @@ import androidx.navigation.NavController
 import com.example.wat2take.data.Course
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
 @Composable
@@ -30,16 +33,30 @@ fun MyCoursesList(navController: NavController) {
     ).value;
     Log.i("CourseObj", courseListJson)
     val courses = parseCourseListJSON(courseListJson)
-    if(courses != null){
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(
-                items = courses,
-                itemContent = {
-                    CourseListItem(course = it)
-                }
-            )
+    if(courses != null && courses.size !== 0){
+        Column() {
+            Button(onClick = {
+                GlobalScope.launch { dataStore.clearCourses() }
+            }) {
+                Text(text = "Clear courses")
+            }
+            LazyColumn(
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                items(
+                    items = courses,
+                    itemContent = {
+                        CourseListItem(course = it)
+                    }
+                )
+            }
+        }
+    }else{
+        Column() {
+            Text(text = "Sorry, no courses stored on this device")
+            Button(onClick = { /*TODO*/ }) {
+                Text(text = "Check for courses again")
+            }
         }
     }
 }
@@ -69,8 +86,8 @@ fun CourseListItem(course: Course) {
                 horizontalAlignment = Alignment.End
 
             ) {
-                Text(text = if(course.grade != null)
-                    "Grade: " + course.grade else "Grade not available"
+                Text(text = if(course.Grade != null)
+                    "Grade: " + course.Grade else "Grade not available"
                 , style = typography.body1)
             }
         }
