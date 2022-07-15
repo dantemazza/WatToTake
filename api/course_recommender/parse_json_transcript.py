@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+import random
 
 ### CONSTANTS ###
 
@@ -19,6 +20,7 @@ LIST_D_CSE = "List D CSE"
 LIST_ABCD_CSE = "List A/B/C/D CSE"
 COURSE_JSON = "/opt/api/course_recommender/json_folder/courses.json"
 REQUIREMENT_JSON = "/opt/api/course_recommender/json_folder/requirements.json"
+PRE_REQ = "PreRequisite"
 ##################
 
 #parse json and output number of courses left to take
@@ -120,6 +122,7 @@ def recommend_E(taken_courses, total_courses, num_left, course_type):
 def recommend_CSE(taken_courses, total_courses, listCLeft, totalLeft):
     listCRecommendations = []
     totalRecommendations = []
+
     for course in total_courses:
         if (listCLeft > 0 or totalLeft > 0) and course not in taken_courses:
             if listCLeft > 0 and total_courses[course] == LIST_C_CSE:
