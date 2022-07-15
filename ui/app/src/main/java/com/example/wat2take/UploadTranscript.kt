@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.OpenableColumns
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -25,8 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import net.gotev.uploadservice.protocols.multipart.MultipartUploadRequest
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
@@ -67,7 +66,7 @@ fun UploadTranscript(navController: NavController) {
             val fileName = getFileData(fileUri, context)
             if (fileName != "") { // "" Is returned if file name not found from getFileData()
                 Log.i("Update", "Received file name: $fileName")
-                val filePath = "/sdcard/Download/$fileName"
+                val filePath = "$storagePath/Download/$fileName"
                 Log.i("Update", "File Path: $filePath")
                 sendFile(filePath)
             } else {
@@ -143,21 +142,21 @@ fun sendFile(filePath: String) {
     val client = OkHttpClient()
 
     val file = File(filePath)
-//    val serverUrl = "https://7cac-192-159-178-206.ngrok.io//transcript"
-    val serverUrl = "https://wattotake.herokuapp.com/transcript"
-
-
-    val formBody = FormBody.Builder()
-        .add("file", filePath)
+    val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
+//    val serverUrl = "https://ptsv2.com/t/2qrpx-1657916021/post"
+//    val serverUrl = "https://wattotake.herokuapp.com/transcript"
+    val httpUrl = serverUrl.toHttpUrlOrNull()!!.newBuilder()
         .build()
+
+    val formBody = MultipartBody.Builder()
+        .setType(MultipartBody.FORM)
+        .addFormDataPart("file", filePath, file.asRequestBody("application/pdf; charset=utf-8".toMediaType()))
+        .build()
+
     val request = Request.Builder()
-        .url(serverUrl)
-//        .post(file.asRequestBody("application/pdf; charset=utf-8".toMediaType()))
+        .url(httpUrl)
         .post(formBody)
-        .addHeader("content-type", "multipart/form-data")
         .build()
-
-    val httpInterceptor = Interceptor
 
     client.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
@@ -178,6 +177,3 @@ fun sendFile(filePath: String) {
     })
 }
 
-private fun sendRequestBody(url: String, requestBody: RequestBody) {
-
-}
