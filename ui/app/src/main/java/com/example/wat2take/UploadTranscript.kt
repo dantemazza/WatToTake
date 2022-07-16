@@ -178,6 +178,9 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
     client.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
             e.printStackTrace()
+            GlobalScope.launch {
+                dataStore.setLoadingKey(false)
+            }
         }
 
         override fun onResponse(call: Call, response: Response) {
