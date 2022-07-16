@@ -16,8 +16,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.JsonParser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -57,7 +59,6 @@ fun UploadTranscript(navController: NavController) {
     }
 
     val context = LocalContext.current
-
     val dataStore = TranscriptDataStore(context)
 
     val pickFileLauncher = rememberLauncherForActivityResult(
@@ -78,13 +79,16 @@ fun UploadTranscript(navController: NavController) {
                 val filePath = "$storagePath/Download/$fileName"
                 Log.i("Update", "File Path: $filePath")
                 sendFile(filePath, dataStore)
+
             } else {
-                // Toast file not found
+                // Toast "file not found"
             }
-            //navController.navigate("myCourses")
+            GlobalScope.launch {
+                dataStore.setLoadingKey(true)
+            }
+            navController.navigate("myCourses") // Navigate to courses and activate loading spinner
         }
     }
-
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -192,6 +196,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                 Log.i("Response JSON", courseListJson.toString())
                 GlobalScope.launch {
                     dataStore.saveCourseList(courseListJson.toString())
+                    dataStore.setLoadingKey(false)
                 }
             }
         }
