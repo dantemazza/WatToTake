@@ -3,6 +3,7 @@ package com.example.wat2take
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -14,7 +15,19 @@ class TranscriptDataStore(private val context: Context) {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("courseList")
         const val DEFAULT_COURSES_VAL = "[]"
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
+        val MY_COURSES_LOADING = booleanPreferencesKey("myCoursesLoadingPrefKey")
     }
+
+    suspend fun setLoadingKey(key: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[MY_COURSES_LOADING] = key
+        }
+    }
+
+    val getLoadingKey = context.dataStore.data
+        .map { preferences ->
+            preferences[MY_COURSES_LOADING] ?: false
+        }
 
     //get course list
     val getCourseList: Flow<String> = context.dataStore.data
