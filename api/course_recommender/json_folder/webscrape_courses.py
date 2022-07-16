@@ -138,14 +138,12 @@ def save_course_info_C(text, json_path):
             course_names = re.findall('[A-Z]{2,5}', line)
             if course_names:
                 course_prefix = course_names[0]
-                print(course_prefix)
                 course_dict[course_prefix] = []  
         else:
             course_names = re.findall(COURSE_CODE_REGEX, line)
             for course_name in course_names:
                 course_dict[course_name] = ""
     if course_dict:
-        print(course_dict)
         with open(json_path, 'w') as fp:
             json.dump(course_dict, fp, indent=2)
 

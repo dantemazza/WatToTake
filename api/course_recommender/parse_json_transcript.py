@@ -12,7 +12,6 @@ ATTEMPTED = "Attempted"
 EARNED = "Earned"
 DESCRIPTION = "Description"
 GRADE = "Grade"
-<<<<<<< HEAD
 FOURTH_YEAR_TE = "4th year TEs"
 NSE = "NSEs"
 LIST_A_CSE = "List A CSEs"
@@ -29,17 +28,6 @@ TE_COURSE_JSON = "/opt/api/course_recommender/json_folder/te_courses.json"
 REQUIREMENT_JSON = "/opt/api/course_recommender/json_folder/requirements.json"
 FOURTH_YEAR_COURSE_CODE_REGEX = "[A-Z]{2,5} +[4][0-9][0-9][A-C|L]?"
 COURSE_CODE_REGEX = "[A-Z]{2,5} +[0-9][0-9][0-9][A-C|L]?"
-=======
-FOURTH_YEAR_TE = "4th year TE"
-NSE = "NSE"
-LIST_A_CSE = "List A CSE"
-LIST_B_CSE = "List B CSE"
-LIST_C_CSE = "List C CSE"
-LIST_D_CSE = "List D CSE"
-LIST_ABCD_CSE = "List A/B/C/D CSE"
-COURSE_JSON = "course_recommender/json_folder/courses.json"
-REQUIREMENT_JSON = "course_recommender/json_folder/requirements.json"
->>>>>>> 342ba3fb1ddfc8948412021800a49f761582735f
 ##################
 
 #parse json and output number of courses left to take
@@ -131,12 +119,18 @@ def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, lis
     nseReturnDict["Courses"] = recommend_NSE(transcriptDict, nseDict, nse)
     returnList.append(nseReturnDict)
     #get cse requirements and recommendations
-    cseReturnDict = {}
+    listccseReturnDict = {}
+    totalcseReturnDict = {}
     listCCSE,  totalCSE = check_num_CSE(requirementsDict[LIST_ABCD_CSE], requirementsDict[LIST_C_CSE], transcriptDict, cseDict, listccseDict, listdcseDict)
-    print(listCCSE,  totalCSE)
-    # returnDict["List C CSE Requirements"] , returnDict["Total CSE Requirements"] = listCCSE, totalCSE
-    # returnDict["List C CSE Recommendations"] , returnDict["Total CSE Recommendations"] = recommend_CSE(transcriptDict, courseDict, listCCSE, totalCSE)
-    # print(json.dumps(returnDict))
+    listCRecommendations, totalRecommendations = recommend_CSE(transcriptDict, cseDict, listccseDict, listCCSE, totalCSE)
+    listccseReturnDict["Requirement_Name"] = LIST_C_CSE
+    listccseReturnDict["Num_Requirements"] = str(listCCSE)
+    listccseReturnDict["Courses"] = listCRecommendations
+    totalcseReturnDict["Requirement_Name"] = LIST_ABCD_CSE
+    totalcseReturnDict["Num_Requirements"] = str(totalCSE)
+    totalcseReturnDict["Courses"] = totalRecommendations
+    returnList.append(listccseReturnDict)
+    returnList.append(totalcseReturnDict)
     returnDict["recommendations"] = returnList
     print(returnDict)
     return returnDict
@@ -195,44 +189,46 @@ def check_num_CSE(total_reqs, c_reqs, taken_courses, cse_courses, list_c_courses
             count += 1
     if count >= 2:
         ListCdiff -= 1
-    return ListABCDdiff, ListCdiff
+    ListCdiff = ListCdiff - c_count
+    return ListCdiff, ListABCDdiff 
 
 def recommend_TE(taken_courses, te_courses, num):
     courses = []
     for course in te_courses:
-        if course not in taken_courses and bool(re.search(FOURTH_YEAR_COURSE_CODE_REGEX, course)):
-            #print(course)
+        prereq_good = prereq_check(taken_courses, course)
+        if not prereq_good:
+            print("Cannot take " + course)
+        if course not in taken_courses and bool(re.search(FOURTH_YEAR_COURSE_CODE_REGEX, course)) and prereq_good:
             courses.append({"course_code": course, "course_title": te_courses[course]})
     random.shuffle(courses)
     courses = courses[:num]
     return courses
 
-def recommend_NSE(taken_courses, te_courses, num):
+def recommend_NSE(taken_courses, nse_courses, num):
     courses = []
-    for course in te_courses:
-        if course not in taken_courses and bool(re.search(COURSE_CODE_REGEX, course)):
-            #print(course)
-            courses.append({"course_code": course, "course_title": te_courses[course]})
+    for course in nse_courses:
+        if course not in taken_courses and bool(re.search(COURSE_CODE_REGEX, course)) and prereq_check(taken_courses, course):
+            courses.append({"course_code": course, "course_title": nse_courses[course]})
     random.shuffle(courses)
     courses = courses[:num]
     return courses
 
-def recommend_CSE(taken_courses, total_courses, listCLeft, totalLeft):
+def recommend_CSE(taken_courses, cse_courses, list_c_cse_courses , listCLeft, totalLeft):
     listCRecommendations = []
     totalRecommendations = []
-
-    for course in total_courses:
-        if (listCLeft > 0 or totalLeft > 0) and course not in taken_courses:
-            if listCLeft > 0 and total_courses[course] == LIST_C_CSE:
+    for course in cse_courses:
+        if course not in taken_courses:
+            prereq_good =  prereq_check(taken_courses, course)
+            if not prereq_good:
+                print("Cannot take " + course)
+            if course in list_c_cse_courses and prereq_good:
                 listCRecommendations.append(course)
-                if totalLeft > 0:
-                    totalRecommendations.append(course) 
-                    totalLeft -= 1
-                listCLeft -= 1
-            elif totalLeft > 0 and (total_courses[course] == LIST_A_CSE or 
-            total_courses[course] == LIST_B_CSE or total_courses[course] == LIST_D_CSE):
+            else:
                 totalRecommendations.append(course)
-                totalLeft -= 1
+    random.shuffle(listCRecommendations)
+    listCRecommendations = listCRecommendations[:listCLeft]
+    random.shuffle(totalRecommendations)
+    totalRecommendations = totalRecommendations[:totalLeft]
     return listCRecommendations, totalRecommendations
 
 def initialize_dict():
@@ -256,7 +252,36 @@ def all_except_check(course_dict, taken_courses, ):
             if nums not in excluded:
                 total += 1
     return total 
-            
+
+def prereq_check(taken_courses, course_code):
+    with open('./json_folder/antireq.json') as f:
+        antireqs = json.load(f)
+    with open('./json_folder/prereq.json') as f:
+        prereqs = json.load(f)
+    
+    if course_code not in prereqs:
+        return True
+    
+    required_prereqs = prereqs[course_code]
+    valid_antireqs = []
+    for course in taken_courses:
+        if course in antireqs:
+            valid_antireqs.extend(antireqs[course])
+    valid_antireqs = set(valid_antireqs)
+    and_prereqs = required_prereqs["and_courses"]
+    or_prereqs = required_prereqs["or_courses"]
+    for course in and_prereqs:
+        if course not in taken_courses and course not in valid_antireqs:
+            return False
+    result = False if or_prereqs else True
+    for course in or_prereqs:
+        if course in taken_courses or course in valid_antireqs:
+            result = True
+            break
+    return result
+    
+
+
 if __name__ == '__main__':
     transcript = './json_folder/transcript.json'
     with open(transcript) as f: 
