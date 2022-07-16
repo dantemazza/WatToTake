@@ -5,15 +5,12 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.os.Environment
-import android.os.Handler
-import android.os.Looper
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.JsonParser
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -33,12 +29,12 @@ import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
-import org.json.JSONArray
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.suspendCoroutine
 
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -48,27 +44,19 @@ fun UploadTranscript(navController: NavController) {
     val dataStore = TranscriptDataStore(context)
 
     val pickFileLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
+        ActivityResultContracts.GetContent()
     ) { fileUri ->
         if (fileUri != null) {
             // Update the state with the Uri
-            val filePathUri = fileUri.path ?: "null"
-            Log.i("PATH: ", filePathUri )
-            Log.i("URI", fileUri.toString())
+            val filePathUri = fileUri.path
+            Log.i("filePathUri: ", filePathUri ?: "")
 
-            val storagePath = Environment.getExternalStorageDirectory().getPath()
-            Log.i("Testing path", "Env path: $storagePath")
-
-            val fileName = getFileData(fileUri, context)
-            if (fileName != "") { // "" Is returned if file name not found from getFileData()
-                Log.i("Update", "Received file name: $fileName")
-                val filePath = "$storagePath/Download/$fileName"
-                Log.i("Update", "File Path: $filePath")
+            if(filePathUri != null){
+                val filePath = filePathUri.replace("/document/raw:", "")
+                Log.i("filePath", filePath)
                 sendFile(filePath, dataStore)
-
-            } else {
-                // Toast "file not found"
             }
+
             GlobalScope.launch {
                 dataStore.setLoadingKey(true)
             }
@@ -99,7 +87,7 @@ fun UploadTranscript(navController: NavController) {
                     fontWeight = FontWeight.Bold
                 )
                 Button(onClick = {
-                    pickFileLauncher.launch(arrayOf("application/pdf"))
+                    pickFileLauncher.launch("application/pdf")
                 }) {
                     Text(text = "Choose File", fontSize = 18.sp)
                 }
@@ -159,38 +147,6 @@ fun UploadTranscript(navController: NavController) {
 //    }
 }
 
-fun getFileData(uri: Uri, context: Context) : String {
-    val contentResolver = context.contentResolver
-
-    // The query, because it only applies to a single document, returns only
-    // one row. There's no need to filter, sort, or select fields,
-    // because we want all fields for one document.
-    val cursor: Cursor? = contentResolver.query(
-        uri, null, null, null, null, null)
-
-    cursor?.use {
-        // moveToFirst() returns false if the cursor has 0 rows. Very handy for
-        // "if there's anything to look at, look at it" conditionals.
-        if (it.moveToFirst()) {
-
-            val columnNames = it.columnNames
-            Log.i("Upload", "Column Names: ${Arrays.toString(columnNames)}")
-            // Note it's called "Display Name". This is
-            // provider-specific, and might not necessarily be the file name.\
-            val displayNameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            if (displayNameIndex != -1) {
-                val displayName: String =
-                    it.getString(displayNameIndex)
-                Log.i("UPLOAD", "Display Name: $displayName")
-                return displayName
-            } else {
-                Log.i("Upload", "No display Name")
-            }
-        }
-    }
-    return ""
-}
-
 fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
     val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -199,7 +155,8 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
         .build();
 
     val file = File(filePath)
-    val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
+    val serverUrl = "https://a69d-192-159-178-206.ngrok.io/transcript"
+    //val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
 //    val serverUrl = "https://ptsv2.com/t/2qrpx-1657916021/post"
 //    val serverUrl = "https://wattotake.herokuapp.com/transcript"
     val httpUrl = serverUrl.toHttpUrlOrNull()!!.newBuilder()
