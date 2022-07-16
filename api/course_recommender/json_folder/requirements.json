@@ -1,17 +1,17 @@
 [{
-    "ElectiveType": "4th year TE",
+    "ElectiveType": "4th year TEs",
     "NumRequired": "5"
 }, {
-    "ElectiveType": "NSE",
+    "ElectiveType": "NSEs",
     "NumRequired": "2"
 }, {
-    "ElectiveType": "List C CSE",
+    "ElectiveType": "List C CSEs",
     "NumRequired": "2"
 }, {
-    "ElectiveType": "List A/B/C/D CSE",
+    "ElectiveType": "List A/B/C/D CSEs",
     "NumRequired": "2"
 }, {
-    "ElectiveType": "3B TE",
+    "ElectiveType": "3B TEs",
     "NumRequired": "3"
 }
 
