@@ -28,5 +28,6 @@ fun Main() {
         composable("home") { Home(navController) }
         composable("myCourses") { MyCoursesList(navController)}
         composable("uploadTranscript") { UploadTranscript(navController) }
+        composable("courseRecs") { MyCourseRecs(navController = navController)}
     }
 }

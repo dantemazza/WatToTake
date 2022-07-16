@@ -46,6 +46,11 @@ fun Home(navController: NavController) {
             }) {
                 Text(text = "Go to my courses", fontSize = 18.sp)
             }
+            Button(onClick = {
+                navController.navigate("courseRecs");
+            }) {
+                Text(text = "Go to my courses recs", fontSize = 18.sp)
+            }
         }
     }
 }
