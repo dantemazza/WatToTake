@@ -1,11 +1,14 @@
 package com.example.wat2take
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +21,8 @@ import androidx.navigation.NavController
 import com.example.wat2take.data.Course
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
 @Composable
@@ -27,23 +32,54 @@ fun MyCoursesList(navController: NavController) {
     var courseListJson = dataStore.getCourseList.collectAsState(
         initial = TranscriptDataStore.DEFAULT_COURSES_VAL
     ).value;
+    Log.i("CourseObj", courseListJson)
+    var courses = parseCourseListJSON(courseListJson)
 
-    val courses = parseCourseListJSON(courseListJson)
+    // Loading
+    var loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
+    Log.i("Loading", loadingState.toString())
 
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        items(
-            items = courses,
-            itemContent = {
-                CourseListItem(course = it)
+    if (!loadingState) {
+        if(courses.size != 0){
+            Column() {
+                Button(onClick = {
+                    GlobalScope.launch { dataStore.clearCourses() }
+                }) {
+                    Text(text = "Clear courses")
+                }
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(
+                        items = courses,
+                        itemContent = {
+                            CourseListItem(course = it)
+                        }
+                    )
+                }
             }
-        )
+        }else{
+            Column() {
+                Text(text = "Sorry, no courses stored on this device")
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = "Check for courses again")
+                }
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ){
+            CircularProgressIndicator()
+        }
     }
+
 }
 
 @Composable
 fun CourseListItem(course: Course) {
+    Log.i("Course", course.toString())
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
@@ -57,8 +93,8 @@ fun CourseListItem(course: Course) {
                 .align(Alignment.CenterVertically)
                 .weight(2f)
             ) {
-                Text(text = course.name, style = typography.h6)
-                Text(text = course.title, style = typography.caption)
+                Text(text = course.Course ?: "Course name unavailable", style = typography.h6)
+                Text(text = course.Description ?: "Course description unavailable", style = typography.caption)
             }
             Column(modifier = Modifier
                 .padding(16.dp)
@@ -66,16 +102,20 @@ fun CourseListItem(course: Course) {
                 horizontalAlignment = Alignment.End
 
             ) {
-                Text(text = "Grade: " + course.grade, style = typography.body1)
+                Text(text = if(course.Grade != null)
+                    "Grade: " + course.Grade else "Grade not available"
+                , style = typography.body1)
             }
         }
     }
 }
 
 fun parseCourseListJSON(json: String): List<Course> {
+    // Log.i("STRING: ", json)
     val gson = Gson()
-    val type: Type = object : TypeToken<List<Course?>?>() {}.type
+    val type: Type = object : TypeToken<List<Course>>() {}.type
     val courseList: List<Course> = gson.fromJson(json, type)
+    // Log.i("", courseList.toString())
     return courseList
 }
 

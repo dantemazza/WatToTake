@@ -3,6 +3,7 @@ package com.example.wat2take
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -14,7 +15,19 @@ class TranscriptDataStore(private val context: Context) {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("courseList")
         const val DEFAULT_COURSES_VAL = "[]"
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
+        val MY_COURSES_LOADING = booleanPreferencesKey("myCoursesLoadingPrefKey")
     }
+
+    suspend fun setLoadingKey(key: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[MY_COURSES_LOADING] = key
+        }
+    }
+
+    val getLoadingKey = context.dataStore.data
+        .map { preferences ->
+            preferences[MY_COURSES_LOADING] ?: false
+        }
 
     //get course list
     val getCourseList: Flow<String> = context.dataStore.data
@@ -23,23 +36,14 @@ class TranscriptDataStore(private val context: Context) {
         }
 
     //save course list into datastore
-    suspend fun saveCourseList() {
-        val courseList: String = "[{\n" +
-                "  \"id\": 0,\n" +
-                "  \"name\": \"ECE240\",\n" +
-                "  \"grade\": 51.2,\n" +
-                "  \"title\": \"Circuits 2\"\n" +
-                "},\n" +
-                "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"name\": \"ECE160\",\n" +
-                "  \"grade\": 62.3,\n" +
-                "  \"title\": \"Electromagnetic Physics\"\n" +
-                "}\n" +
-                "]"
+    suspend fun saveCourseList(courseJson: String) {
+        context.dataStore.edit { it.clear() }
         context.dataStore.edit { preferences ->
-            preferences[COURSE_LIST_KEY] = courseList
+            preferences[COURSE_LIST_KEY] = courseJson
         }
     }
 
+    suspend fun clearCourses(){
+        context.dataStore.edit { it.clear() }
+    }
 }

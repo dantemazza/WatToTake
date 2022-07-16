@@ -2,4 +2,5 @@
     <string name="app_name">Wat2Take</string>
     <string name="title_activity_my_courses">MyCourses</string>
     <!-- Strings used for fragments for navigation -->
+    <string name="json_test"></string>
 </resources>

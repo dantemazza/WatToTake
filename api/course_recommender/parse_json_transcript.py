@@ -12,6 +12,7 @@ ATTEMPTED = "Attempted"
 EARNED = "Earned"
 DESCRIPTION = "Description"
 GRADE = "Grade"
+<<<<<<< HEAD
 FOURTH_YEAR_TE = "4th year TEs"
 NSE = "NSEs"
 LIST_A_CSE = "List A CSEs"
@@ -28,6 +29,17 @@ TE_COURSE_JSON = "/opt/api/course_recommender/json_folder/te_courses.json"
 REQUIREMENT_JSON = "/opt/api/course_recommender/json_folder/requirements.json"
 FOURTH_YEAR_COURSE_CODE_REGEX = "[A-Z]{2,5} +[4][0-9][0-9][A-C|L]?"
 COURSE_CODE_REGEX = "[A-Z]{2,5} +[0-9][0-9][0-9][A-C|L]?"
+=======
+FOURTH_YEAR_TE = "4th year TE"
+NSE = "NSE"
+LIST_A_CSE = "List A CSE"
+LIST_B_CSE = "List B CSE"
+LIST_C_CSE = "List C CSE"
+LIST_D_CSE = "List D CSE"
+LIST_ABCD_CSE = "List A/B/C/D CSE"
+COURSE_JSON = "course_recommender/json_folder/courses.json"
+REQUIREMENT_JSON = "course_recommender/json_folder/requirements.json"
+>>>>>>> 342ba3fb1ddfc8948412021800a49f761582735f
 ##################
 
 #parse json and output number of courses left to take
