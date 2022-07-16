@@ -19,6 +19,7 @@ LIST_A_JSON_PATH = "list_a_courses.json"
 LIST_B_JSON_PATH = "list_b_courses.json"
 LIST_C_JSON_PATH = "list_c_courses.json"
 LIST_D_JSON_PATH = "list_d_courses.json"
+EXCEPTION_JSON_PATH = "exception.json"
 NSE_PATH = "nse_courses.json"
 TE_PATH = "te_courses.json"
 
@@ -44,7 +45,6 @@ def parse_TE(url):
                             description = ' '.join(description.split())
                             course_dict[course_name] = description
     if course_dict:
-        print(course_dict)
         with open(TE_PATH, 'w') as fp:
             json.dump(course_dict, fp, indent=2)
 
@@ -53,20 +53,18 @@ def parse_NSE(url):
     soup = BeautifulSoup(r.content, 'html5lib')
     headers = soup.find_all(re.compile('^h4$'))
     for header in headers:
-        print(header.text)
         for sib in header.find_next_siblings():
             if sib.name=="h4":
                 break
             else:
                 if header.text == NSE and sib.name=="ul":
-                    print("Printing NSE")
+
                     save_course_info_NSE(sib.text.splitlines(), NSE_PATH)
 
 def save_course_info_NSE(text, json_path):
     course_dict = {}
     for line in text:
         if bool(re.search('and', line)):
-            print(line)
             lines = line.split(" and ")
             for l in lines:
                 course_name = re.findall(COURSE_CODE_REGEX, l)
@@ -89,7 +87,6 @@ def save_course_info_NSE(text, json_path):
                 course_dict[course_name] = description
 
     if course_dict:
-        print(course_dict)
         with open(json_path, 'w') as fp:
             json.dump(course_dict, fp, indent=2)
 
@@ -99,7 +96,6 @@ def parse_CSE(url):
     soup.prettify()
     headers = soup.find_all(re.compile('^h4$'))
     for header in headers:
-        print(header.text)
         for sib in header.find_next_siblings():
             if sib.name=="h4":
                 break
@@ -110,9 +106,9 @@ def parse_CSE(url):
                 if header.text == LIST_B and sib.name=="ul":
                     save_course_info_A_B(sib.text.splitlines(), LIST_B_JSON_PATH)
                 if header.text == LIST_C:
-                    save_course_info_C_D(sib.text.splitlines(), LIST_C_JSON_PATH)
+                    save_course_info_C(sib.text.splitlines(), LIST_C_JSON_PATH)
                 if header.text == LIST_D:
-                    save_course_info_C_D(sib.text.splitlines(), LIST_D_JSON_PATH)
+                    save_course_info_D(sib.text.splitlines(), LIST_D_JSON_PATH)
                     
 def save_course_info_A_B(text, json_path):
     course_dict = {}
@@ -126,15 +122,25 @@ def save_course_info_A_B(text, json_path):
             description = line.split("0.")[0].strip()
             description = ' '.join(description.split())
             course_dict[course_name] = description
-    print(course_dict)
     if course_dict:
         with open(json_path, 'w') as fp:
             json.dump(course_dict, fp, indent=2)
 
-def save_course_info_C_D(text, json_path):
+def save_course_info_C(text, json_path):
     course_dict = {}
     for line in text:
-        if not bool(re.search('except', line)):
+        if bool(re.search('except', line)):
+            course_names = re.findall(COURSE_CODE_REGEX, line)
+            if course_names:
+                course_prefix = re.findall('[A-Z]{2,5}', course_names[0])
+                course_dict[course_prefix[0]] = course_names
+        elif bool(re.search('All', line)):
+            course_names = re.findall('[A-Z]{2,5}', line)
+            if course_names:
+                course_prefix = course_names[0]
+                print(course_prefix)
+                course_dict[course_prefix] = []  
+        else:
             course_names = re.findall(COURSE_CODE_REGEX, line)
             for course_name in course_names:
                 course_dict[course_name] = ""
@@ -143,7 +149,18 @@ def save_course_info_C_D(text, json_path):
         with open(json_path, 'w') as fp:
             json.dump(course_dict, fp, indent=2)
 
+def save_course_info_D(text, json_path):
+    course_dict = {}
+    for line in text:
+        if not bool(re.search('except', line)):
+            course_names = re.findall(COURSE_CODE_REGEX, line)
+            for course_name in course_names:
+                course_dict[course_name] = ""
+    if course_dict:
+        with open(json_path, 'w') as fp:
+            json.dump(course_dict, fp, indent=2)
+
 if __name__ == '__main__':
-    parse_TE(URL)
-    parse_NSE(URL)
+    #parse_TE(URL)
+    #parse_NSE(URL)
     parse_CSE(CSE_URL)
