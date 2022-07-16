@@ -16,6 +16,7 @@ class TranscriptDataStore(private val context: Context) {
         const val DEFAULT_COURSES_VAL = "[]"
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
         val MY_COURSES_LOADING = booleanPreferencesKey("myCoursesLoadingPrefKey")
+        val STORAGE_PERMISSIONS_GRANTED = booleanPreferencesKey("transcriptUploadStoragePermission")
     }
 
     suspend fun setLoadingKey(key: Boolean) {
@@ -27,6 +28,17 @@ class TranscriptDataStore(private val context: Context) {
     val getLoadingKey = context.dataStore.data
         .map { preferences ->
             preferences[MY_COURSES_LOADING] ?: false
+        }
+
+    suspend fun setStoragePermissionGranted(value: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[STORAGE_PERMISSIONS_GRANTED] = value
+        }
+    }
+
+    val getStoragePermissionsGranted = context.dataStore.data
+        .map { preferences ->
+            preferences[STORAGE_PERMISSIONS_GRANTED] ?: false
         }
 
     //get course list

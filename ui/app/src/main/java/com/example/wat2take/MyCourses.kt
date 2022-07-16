@@ -19,62 +19,66 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.wat2take.data.AcquiredCourse
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MyCoursesList(navController: NavController) {
     val context = LocalContext.current
+
     val dataStore = TranscriptDataStore(context)
+
     var courseListJson = dataStore.getCourseList.collectAsState(
         initial = TranscriptDataStore.DEFAULT_COURSES_VAL
     ).value;
-    Log.i("CourseObj", courseListJson)
     var courses = parseCourseListJSON(courseListJson)
 
     // Loading
     var loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
     Log.i("Loading", loadingState.toString())
 
-    if (!loadingState) {
-        if(courses.size != 0){
-            Column() {
-                Button(onClick = {
-                    GlobalScope.launch { dataStore.clearCourses() }
-                }) {
-                    Text(text = "Clear courses")
+        if (!loadingState) {
+            if(courses.size != 0){
+                Column() {
+                    Button(onClick = {
+                        GlobalScope.launch { dataStore.clearCourses() }
+                    }) {
+                        Text(text = "Clear courses")
+                    }
+                    LazyColumn(
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        items(
+                            items = courses,
+                            itemContent = {
+                                CourseListItem(acquiredCourse = it)
+                            }
+                        )
+                    }
                 }
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    items(
-                        items = courses,
-                        itemContent = {
-                            CourseListItem(acquiredCourse = it)
-                        }
-                    )
+            }else{
+                Column() {
+                    Text(text = "Sorry, no courses stored on this device")
+                    Button(onClick = {
+                        navController.navigate("uploadTranscript")
+                    }) {
+                        Text(text = "Upload a transcript to our service")
+                    }
                 }
             }
-        }else{
-            Column() {
-                Text(text = "Sorry, no courses stored on this device")
-                Button(onClick = { /*TODO*/ }) {
-                    Text(text = "Check for courses again")
-                }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ){
+                CircularProgressIndicator()
             }
         }
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ){
-            CircularProgressIndicator()
-        }
-    }
-
 }
 
 @Composable

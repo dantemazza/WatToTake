@@ -11,10 +11,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -27,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.*
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.JsonParser
 import kotlinx.coroutines.GlobalScope
@@ -43,21 +41,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.suspendCoroutine
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun UploadTranscript(navController: NavController) {
-    val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permission Accepted: Do something
-            Log.d("ExampleScreen","PERMISSION GRANTED")
-
-        } else {
-            // Permission Denied: Do something
-            Log.d("ExampleScreen","PERMISSION DENIED")
-        }
-    }
-
     val context = LocalContext.current
     val dataStore = TranscriptDataStore(context)
 
@@ -90,33 +76,87 @@ fun UploadTranscript(navController: NavController) {
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Upload your University of Waterloo Transcript Here",
-                fontSize = 36.sp,
-                modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold
-            )
-            Button(onClick = {
-                pickFileLauncher.launch(arrayOf("application/pdf"))
-            }) {
-                Text(text = "Choose File", fontSize = 18.sp)
+    val storagePermissionState = rememberMultiplePermissionsState(
+        listOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+    )
+    if (storagePermissionState.allPermissionsGranted) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(
+                    text = "Upload your University of Waterloo Transcript Here",
+                    fontSize = 36.sp,
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold
+                )
+                Button(onClick = {
+                    pickFileLauncher.launch(arrayOf("application/pdf"))
+                }) {
+                    Text(text = "Choose File", fontSize = 18.sp)
+                }
             }
-            Button(onClick = {
-                launcher.launch(Manifest.permission.MANAGE_EXTERNAL_STORAGE)
-            }) {
-                Text(text = "Request Permissions", fontSize = 18.sp)
+        }
+    } else {
+        Column {
+            Text("Wat2Take requires deivce storage access in order to allow you to upload your " +
+                    "UW Transcript. Please press the button below to grant us this permission")
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = { storagePermissionState.launchMultiplePermissionRequest() }) {
+                Text("Request device storage permission")
             }
         }
     }
+
+//    val storagePermissionsGranted = dataStore.getStoragePermissionsGranted
+//        .collectAsState(initial = false).value
+//
+//    val requestPermissionLauncher =
+//        rememberLauncherForActivityResult(
+//            ActivityResultContracts.RequestPermission()
+//        ) { isGranted: Boolean ->
+//            if (isGranted) {
+//                GlobalScope.launch {
+//                    dataStore.setStoragePermissionGranted(true)
+//                }
+//            } else {
+//                GlobalScope.launch {
+//                    dataStore.setStoragePermissionGranted(false)
+//                }
+//            }
+//        }
+//
+//    LaunchedEffect(Unit){
+//        when {
+//            ContextCompat.checkSelfPermission(
+//                context,
+//                Manifest.permission.READ_EXTERNAL_STORAGE
+//            ) == PackageManager.PERMISSION_GRANTED -> {
+//                dataStore.setStoragePermissionGranted(true)
+//            }
+//            shouldShowRequestPermissionRationale() -> {
+//                // In an educational UI, explain to the user why your app requires this
+//                // permission for a specific feature to behave as expected. In this UI,
+//                // include a "cancel" or "no thanks" button that allows the user to
+//                // continue using your app without granting the permission.
+//                showInContextUI(...)
+//            }
+//            else -> {
+//                // You can directly ask for the permission.
+//                // The registered ActivityResultCallback gets the result of this request.
+//                requestPermissionLauncher.launch(
+//                    Manifest.permission.REQUESTED_PERMISSION)
+//            }
+//        }
+//    }
 }
 
 fun getFileData(uri: Uri, context: Context) : String {
