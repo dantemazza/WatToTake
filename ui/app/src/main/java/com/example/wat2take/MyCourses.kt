@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,33 +33,48 @@ fun MyCoursesList(navController: NavController) {
         initial = TranscriptDataStore.DEFAULT_COURSES_VAL
     ).value;
     Log.i("CourseObj", courseListJson)
-    val courses = parseCourseListJSON(courseListJson)
-    if(courses != null && courses.size !== 0){
-        Column() {
-            Button(onClick = {
-                GlobalScope.launch { dataStore.clearCourses() }
-            }) {
-                Text(text = "Clear courses")
+    var courses = parseCourseListJSON(courseListJson)
+
+    // Loading
+    var loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
+    Log.i("Loading", loadingState.toString())
+
+    if (!loadingState) {
+        if(courses.size != 0){
+            Column() {
+                Button(onClick = {
+                    GlobalScope.launch { dataStore.clearCourses() }
+                }) {
+                    Text(text = "Clear courses")
+                }
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(
+                        items = courses,
+                        itemContent = {
+                            CourseListItem(course = it)
+                        }
+                    )
+                }
             }
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                items(
-                    items = courses,
-                    itemContent = {
-                        CourseListItem(course = it)
-                    }
-                )
+        }else{
+            Column() {
+                Text(text = "Sorry, no courses stored on this device")
+                Button(onClick = { /*TODO*/ }) {
+                    Text(text = "Check for courses again")
+                }
             }
         }
-    }else{
-        Column() {
-            Text(text = "Sorry, no courses stored on this device")
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = "Check for courses again")
-            }
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ){
+            CircularProgressIndicator()
         }
     }
+
 }
 
 @Composable
