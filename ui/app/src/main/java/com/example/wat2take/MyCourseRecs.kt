@@ -7,10 +7,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +26,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
+import kotlin.math.exp
 
 
 @Composable
@@ -35,7 +36,24 @@ fun MyCourseRecs(navController: NavController) {
     var courseListJson = dataStore.getCourseRecsList.collectAsState(
         initial = TranscriptDataStore.DEFAULT_COURSES_VAL
     ).value
-    var courses = parseCourseListRecsJSON(courseListJson)
+    var recommendationGroups = parseCourseListRecsJSON(courseListJson)
+
+    // Convert Rec Groups into VerboseCourseRecs for our cards
+    var courses = emptyList<VerboseCourseRec>()
+    for( recGroup in recommendationGroups) {
+        val name = recGroup.Requirement_Name
+        val nums_reqs = recGroup.Num_Requirements
+        for(course in recGroup.Courses) {
+            val verboseCourseRec = VerboseCourseRec(
+                course_code = course.course_code,
+                course_title = course.course_title,
+                Requirement_Name = name,
+                Num_Requirements = nums_reqs
+            )
+            courses = courses + verboseCourseRec
+        }
+    }
+
     Column() {
         Text(text = "Course Recommendations",
             modifier = Modifier
@@ -50,38 +68,22 @@ fun MyCourseRecs(navController: NavController) {
             items(
                 items = courses,
                 itemContent = {
-                    CourseRecGroupListItem(recommendationGroup = it)
+                    CourseRecGroupListItem(verboseCourseRec = it)
                 }
             )
         }
     }
 }
 
-@Composable
-fun CourseRecGroupListItem(recommendationGroup: RecommendationGroup) {
-    Log.i("Rec Group", recommendationGroup.toString())
-    Text(text = "${recommendationGroup.Requirement_Name}: Required ${recommendationGroup.Num_Requirements}",
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 8.dp),
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.h3
-    )
-    LazyColumn(
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-    ) {
-        items(
-            items = recommendationGroup.Courses,
-            itemContent = {
-                    CourseRecListItem(courseRec = it)
-            }
-        )
-    }
-}
+data class VerboseCourseRec (
+    val course_code: String,
+    val course_title: String,
+    val Requirement_Name : String,
+    val Num_Requirements: Number
+ )
 
 @Composable
-fun CourseRecListItem(courseRec: CourseRec) {
-    Log.i("Course Rec", courseRec.toString())
+fun CourseRecGroupListItem(verboseCourseRec: VerboseCourseRec) {
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 8.dp)
@@ -95,7 +97,7 @@ fun CourseRecListItem(courseRec: CourseRec) {
                 .align(Alignment.CenterVertically)
                 .weight(1f)
             ) {
-                Text(text = courseRec.course_code ?: "Course code unavailable", style = MaterialTheme.typography.h6)
+                Text(text = verboseCourseRec.course_code, style = MaterialTheme.typography.h6)
             }
             Column(modifier = Modifier
                 .padding(16.dp)
@@ -103,7 +105,8 @@ fun CourseRecListItem(courseRec: CourseRec) {
                 horizontalAlignment = Alignment.End
 
             ) {
-                Text(text = courseRec.course_title ?: "Course title unavailable", style = MaterialTheme.typography.body1)
+                Text(text = verboseCourseRec.course_title, style = MaterialTheme.typography.body1)
+                Text(text = "Req: ${verboseCourseRec.Requirement_Name}, Num Req: ${verboseCourseRec.Num_Requirements}", style = MaterialTheme.typography.caption)
             }
         }
     }
@@ -122,9 +125,12 @@ fun parseCourseListRecsJSON(json: String): List<RecommendationGroup> {
     // String to JSON courses
     val courseRecType: Type = object : TypeToken<List<CourseRec>>() {}.type
     for (recGroup in recGroups) {
+//        Log.i("RecGroupElement", recGroup.toString())
         val recGroupObject = recGroup.asJsonObject
+//        Log.i("RecGroupObject", recGroupObject.toString())
         Log.i("Require_Name to string", recGroupObject.get("Requirement_Name").asString)
-        val courseList: List<CourseRec> = gson.fromJson(json, courseRecType)
+        Log.i("Req_Courses",recGroupObject.get("Courses").toString() )
+        val courseList: List<CourseRec> = gson.fromJson(recGroupObject.get("Courses"), courseRecType)
         Log.i("Require_Courses list", courseList.toString())
         Log.i("Require_Num int", recGroupObject.get("Num_Requirements").asInt.toString())
         val recGroupBuilder : RecommendationGroup = RecommendationGroup(
