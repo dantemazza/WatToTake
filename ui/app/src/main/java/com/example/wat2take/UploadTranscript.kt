@@ -168,7 +168,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
         .build();
 
     val file = File(filePath)
-    val serverUrl = "https://a69d-192-159-178-206.ngrok.io/transcript"
+    val serverUrl = "https://99a7-192-159-178-206.ngrok.io/transcript"
     //val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
 //    val serverUrl = "https://ptsv2.com/t/2qrpx-1657916021/post"
 //    val serverUrl = "https://wattotake.herokuapp.com/transcript"
@@ -195,7 +195,12 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
 
         override fun onResponse(call: Call, response: Response) {
             response.use {
-                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                if (!response.isSuccessful) {
+                    GlobalScope.launch {
+                        dataStore.setLoadingKey(false)
+                    }
+                    throw IOException("Unexpected code $response")
+                }
 
                 for ((name, value) in response.headers) {
                     println("$name: $value")
@@ -206,9 +211,12 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                 val responseBodyJSON = JsonParser().parse(responseBody).asJsonObject
                 Log.i("Response Json", responseBodyJSON.toString())
                 val courseListJson = responseBodyJSON.getAsJsonArray("courses")
-                Log.i("Response JSON", courseListJson.toString())
+                val courseRecsListJsonObject = responseBodyJSON.getAsJsonObject("recommendations")
+                val courseRecsListJsonArray = courseRecsListJsonObject.getAsJsonArray("recommendations")
+                Log.i("Response Course List JSON", courseListJson.toString())
+                Log.i("Response Course List Recs JSON", courseRecsListJsonArray.toString())
                 GlobalScope.launch {
-                    dataStore.saveCourseList(courseListJson.toString())
+                    dataStore.saveCourseList(courseListJson.toString(), courseRecsListJsonArray.toString())
                     dataStore.setLoadingKey(false)
                 }
             }

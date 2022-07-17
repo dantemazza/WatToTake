@@ -6,8 +6,13 @@ data class AcquiredCourse(
     val Description: String
 )
 
+data class CourseRec(
+    val course_code: String,
+    val course_title: String
+)
+
 data class RecommendationGroup(
     val Requirement_Name : String,
-    val Courses: List<String>,
+    val Courses: List<CourseRec>,
     val Num_Requirements: Number
 )
