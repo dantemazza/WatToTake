@@ -168,7 +168,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
         .build();
 
     val file = File(filePath)
-    val serverUrl = "https://a69d-192-159-178-206.ngrok.io/transcript"
+    val serverUrl = "https://99a7-192-159-178-206.ngrok.io/transcript"
     //val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
 //    val serverUrl = "https://ptsv2.com/t/2qrpx-1657916021/post"
 //    val serverUrl = "https://wattotake.herokuapp.com/transcript"
@@ -195,7 +195,12 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
 
         override fun onResponse(call: Call, response: Response) {
             response.use {
-                if (!response.isSuccessful) throw IOException("Unexpected code $response")
+                if (!response.isSuccessful) {
+                    GlobalScope.launch {
+                        dataStore.setLoadingKey(false)
+                    }
+                    throw IOException("Unexpected code $response")
+                }
 
                 for ((name, value) in response.headers) {
                     println("$name: $value")

@@ -20,10 +20,7 @@ import androidx.navigation.NavController
 import com.example.wat2take.data.AcquiredCourse
 import com.example.wat2take.data.CourseRec
 import com.example.wat2take.data.RecommendationGroup
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
+import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import kotlin.math.exp
@@ -97,16 +94,17 @@ fun CourseRecGroupListItem(verboseCourseRec: VerboseCourseRec) {
                 .align(Alignment.CenterVertically)
                 .weight(1f)
             ) {
-                Text(text = verboseCourseRec.course_code, style = MaterialTheme.typography.h6)
+                Text(text = verboseCourseRec.course_code, style = MaterialTheme.typography.h6, textAlign = TextAlign.Left)
             }
             Column(modifier = Modifier
                 .padding(16.dp)
                 .weight(2f),
-                horizontalAlignment = Alignment.End
 
             ) {
-                Text(text = verboseCourseRec.course_title, style = MaterialTheme.typography.body1)
-                Text(text = "Req: ${verboseCourseRec.Requirement_Name}, Num Req: ${verboseCourseRec.Num_Requirements}", style = MaterialTheme.typography.caption)
+                Text(text = if (verboseCourseRec.course_title != "")
+                    verboseCourseRec.course_title else "No Course Title"
+                , style = MaterialTheme.typography.body2, textAlign = TextAlign.Left)
+                Text(text = "${verboseCourseRec.Requirement_Name}, Num Req: ${verboseCourseRec.Num_Requirements}", style = MaterialTheme.typography.caption, textAlign = TextAlign.Left)
             }
         }
     }
@@ -118,27 +116,31 @@ fun parseCourseListRecsJSON(json: String): List<RecommendationGroup> {
     // Log.i("STRING: ", json)
     val gson = Gson()
     // Take apart rec groups first
-    val jelement: JsonElement = JsonParser().parse(json)
-    val recGroups = jelement.asJsonArray
-    Log.i("Rec Groups Json", recGroups.toString())
+    try {
+        val jelement: JsonElement = JsonParser().parse(json)
+        val recGroups = jelement.asJsonArray
+        Log.i("Rec Groups Json", recGroups.toString())
 
-    // String to JSON courses
-    val courseRecType: Type = object : TypeToken<List<CourseRec>>() {}.type
-    for (recGroup in recGroups) {
+        // String to JSON courses
+        val courseRecType: Type = object : TypeToken<List<CourseRec>>() {}.type
+        for (recGroup in recGroups) {
 //        Log.i("RecGroupElement", recGroup.toString())
-        val recGroupObject = recGroup.asJsonObject
+            val recGroupObject = recGroup.asJsonObject
 //        Log.i("RecGroupObject", recGroupObject.toString())
-        Log.i("Require_Name to string", recGroupObject.get("Requirement_Name").asString)
-        Log.i("Req_Courses",recGroupObject.get("Courses").toString() )
-        val courseList: List<CourseRec> = gson.fromJson(recGroupObject.get("Courses"), courseRecType)
-        Log.i("Require_Courses list", courseList.toString())
-        Log.i("Require_Num int", recGroupObject.get("Num_Requirements").asInt.toString())
-        val recGroupBuilder : RecommendationGroup = RecommendationGroup(
-            Requirement_Name = recGroupObject.get("Requirement_Name").asString,
-            Courses = courseList,
-            Num_Requirements = recGroupObject.get("Num_Requirements").asInt
-        )
-        recGroupsReturn = recGroupsReturn + recGroupBuilder
+            Log.i("Require_Name to string", recGroupObject.get("Requirement_Name").asString)
+            Log.i("Req_Courses",recGroupObject.get("Courses").toString() )
+            val courseList: List<CourseRec> = gson.fromJson(recGroupObject.get("Courses"), courseRecType)
+            Log.i("Require_Courses list", courseList.toString())
+            Log.i("Require_Num int", recGroupObject.get("Num_Requirements").asInt.toString())
+            val recGroupBuilder : RecommendationGroup = RecommendationGroup(
+                Requirement_Name = recGroupObject.get("Requirement_Name").asString,
+                Courses = courseList,
+                Num_Requirements = recGroupObject.get("Num_Requirements").asInt
+            )
+            recGroupsReturn = recGroupsReturn + recGroupBuilder
+        }
+    } catch (e: JsonSyntaxException) {
+        Log.d("JSON_EXCEPTION", "Something went wrong parsing JSON for CourseListRecs: ${e.stackTraceToString()}")
     }
 
     return recGroupsReturn
