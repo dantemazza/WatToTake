@@ -222,9 +222,9 @@ def recommend_CSE(taken_courses, cse_courses, list_c_cse_courses , listCLeft, to
             if not prereq_good:
                 print("Cannot take " + course)
             if course in list_c_cse_courses and prereq_good:
-                listCRecommendations.append(course)
+                listCRecommendations.append({"course_code": course, "course_title": list_c_cse_courses[course]})
             else:
-                totalRecommendations.append(course)
+                totalRecommendations.append({"course_code": course, "course_title": cse_courses[course]})
     random.shuffle(listCRecommendations)
     listCRecommendations = listCRecommendations[:listCLeft]
     random.shuffle(totalRecommendations)
