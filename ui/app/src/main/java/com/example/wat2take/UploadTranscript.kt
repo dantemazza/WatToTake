@@ -206,9 +206,12 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                 val responseBodyJSON = JsonParser().parse(responseBody).asJsonObject
                 Log.i("Response Json", responseBodyJSON.toString())
                 val courseListJson = responseBodyJSON.getAsJsonArray("courses")
-                Log.i("Response JSON", courseListJson.toString())
+                val courseRecsListJsonObject = responseBodyJSON.getAsJsonObject("recommendations")
+                val courseRecsListJsonArray = courseRecsListJsonObject.getAsJsonArray("recommendations")
+                Log.i("Response Course List JSON", courseListJson.toString())
+                Log.i("Response Course List Recs JSON", courseRecsListJsonArray.toString())
                 GlobalScope.launch {
-                    dataStore.saveCourseList(courseListJson.toString())
+                    dataStore.saveCourseList(courseListJson.toString(), courseRecsListJsonArray.toString())
                     dataStore.setLoadingKey(false)
                 }
             }

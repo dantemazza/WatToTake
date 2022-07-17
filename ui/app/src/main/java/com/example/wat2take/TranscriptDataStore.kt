@@ -17,6 +17,7 @@ class TranscriptDataStore(private val context: Context) {
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
         val MY_COURSES_LOADING = booleanPreferencesKey("myCoursesLoadingPrefKey")
         val STORAGE_PERMISSIONS_GRANTED = booleanPreferencesKey("transcriptUploadStoragePermission")
+        val MY_COURSE_RECS_KEY = stringPreferencesKey("courseRecs")
     }
 
     suspend fun setLoadingKey(key: Boolean) {
@@ -47,15 +48,23 @@ class TranscriptDataStore(private val context: Context) {
             preferences[COURSE_LIST_KEY] ?: DEFAULT_COURSES_VAL;
         }
 
+    val getCourseRecsList: Flow<String> = context.dataStore.data
+        .map { preferences ->
+            preferences[MY_COURSE_RECS_KEY] ?: DEFAULT_COURSES_VAL
+        }
+
     //save course list into datastore
-    suspend fun saveCourseList(courseJson: String) {
+    suspend fun saveCourseList(courseJson: String, courseRecsJson: String) {
         context.dataStore.edit { it.clear() }
         context.dataStore.edit { preferences ->
             preferences[COURSE_LIST_KEY] = courseJson
+            preferences[MY_COURSE_RECS_KEY] = courseRecsJson
         }
     }
 
     suspend fun clearCourses(){
         context.dataStore.edit { it.clear() }
     }
+
+
 }
