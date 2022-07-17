@@ -206,18 +206,22 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                     println("$name: $value")
                 }
 
-                val responseBody = response.body!!.string()
-                Log.i("RESPONSE", responseBody)
-                val responseBodyJSON = JsonParser().parse(responseBody).asJsonObject
-                Log.i("Response Json", responseBodyJSON.toString())
-                val courseListJson = responseBodyJSON.getAsJsonArray("courses")
-                val courseRecsListJsonObject = responseBodyJSON.getAsJsonObject("recommendations")
-                val courseRecsListJsonArray = courseRecsListJsonObject.getAsJsonArray("recommendations")
-                Log.i("Response Course List JSON", courseListJson.toString())
-                Log.i("Response Course List Recs JSON", courseRecsListJsonArray.toString())
-                GlobalScope.launch {
-                    dataStore.saveCourseList(courseListJson.toString(), courseRecsListJsonArray.toString())
-                    dataStore.setLoadingKey(false)
+                try {
+                    val responseBody = response.body!!.string()
+                    Log.i("RESPONSE", responseBody)
+                    val responseBodyJSON = JsonParser().parse(responseBody).asJsonObject
+                    Log.i("Response Json", responseBodyJSON.toString())
+                    val courseListJson = responseBodyJSON.getAsJsonArray("courses")
+                    val courseRecsListJsonObject = responseBodyJSON.getAsJsonObject("recommendations")
+                    val courseRecsListJsonArray = courseRecsListJsonObject.getAsJsonArray("recommendations")
+                    Log.i("Response Course List JSON", courseListJson.toString())
+                    Log.i("Response Course List Recs JSON", courseRecsListJsonArray.toString())
+                    GlobalScope.launch {
+                        dataStore.saveCourseList(courseListJson.toString(), courseRecsListJsonArray.toString())
+                        dataStore.setLoadingKey(false)
+                    }
+                } catch (e: Exception) {
+                    Log.d("Caught Error", e.stackTraceToString())
                 }
             }
         }
