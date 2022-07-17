@@ -4,7 +4,7 @@ import re
 import random
 
 ### CONSTANTS ###
-
+PATH_PREFIX = "/opt/api/course_recommender/"
 COURSE_NAME = "Course"
 ELECTIVE_TYPE = "ElectiveType"
 NUM_REQUIRED = "NumRequired"
@@ -19,13 +19,13 @@ LIST_B_CSE = "List B CSEs"
 LIST_C_CSE = "List C CSEs"
 LIST_D_CSE = "List D CSEs"
 LIST_ABCD_CSE = "List A/B/C/D CSEs"
-LIST_A_COURSE_JSON = "/opt/api/course_recommender/json_folder/list_a_courses.json"
-LIST_B_COURSE_JSON = "/opt/api/course_recommender/json_folder/list_b_courses.json"
-LIST_C_COURSE_JSON = "/opt/api/course_recommender/json_folder/list_c_courses.json"
-LIST_D_COURSE_JSON = "/opt/api/course_recommender/json_folder/list_d_courses.json"
-NSE_COURSE_JSON = "/opt/api/course_recommender/json_folder/nse_courses.json"
-TE_COURSE_JSON = "/opt/api/course_recommender/json_folder/te_courses.json"
-REQUIREMENT_JSON = "/opt/api/course_recommender/json_folder/requirements.json"
+LIST_A_COURSE_JSON = f"{PATH_PREFIX}json_folder/list_a_courses.json"
+LIST_B_COURSE_JSON = f"{PATH_PREFIX}json_folder/list_b_courses.json"
+LIST_C_COURSE_JSON = f"{PATH_PREFIX}json_folder/list_c_courses.json"
+LIST_D_COURSE_JSON = f"{PATH_PREFIX}json_folder/list_d_courses.json"
+NSE_COURSE_JSON = f"{PATH_PREFIX}json_folder/nse_courses.json"
+TE_COURSE_JSON = f"{PATH_PREFIX}json_folder/te_courses.json"
+REQUIREMENT_JSON = f"{PATH_PREFIX}json_folder/requirements.json"
 FOURTH_YEAR_COURSE_CODE_REGEX = "[A-Z]{2,5} +[4][0-9][0-9][A-C|L]?"
 COURSE_CODE_REGEX = "[A-Z]{2,5} +[0-9][0-9][0-9][A-C|L]?"
 ##################
@@ -34,10 +34,10 @@ COURSE_CODE_REGEX = "[A-Z]{2,5} +[0-9][0-9][0-9][A-C|L]?"
 def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, list_a_courses_json=LIST_A_COURSE_JSON,
                         list_b_courses_json=LIST_B_COURSE_JSON, list_c_courses_json=LIST_C_COURSE_JSON, list_d_courses_json=LIST_D_COURSE_JSON,
                         nse_courses_json=NSE_COURSE_JSON, te_courses_json=TE_COURSE_JSON):
-    '''
+    """
     input: requirments json file path, transcript json file path, course json file path
     output: number of TE, CSE, NSE left to take
-    '''
+    """
 
     #load transcript
     transcriptDict = {}
@@ -137,10 +137,10 @@ def get_recommendations(transcript_json, requirements_json=REQUIREMENT_JSON, lis
 
 #determine whether course was passed or failed
 def pass_or_fail(course):
-    '''
+    """
     input: course entry in dictionary
     output: True or False, True = passed
-    '''
+    """
     if ATTEMPTED in course.keys():
         return True if course[ATTEMPTED] == course[EARNED] else False
     else:
@@ -148,10 +148,10 @@ def pass_or_fail(course):
 
 #return elective type of course
 def lookup_course(course, course_lookup_dict):
-    '''
+    """
     input: single course JSON, course lookup dictionary
     output: elective type of course
-    '''
+    """
     course_name = course[COURSE_NAME]
     if course_name in course_lookup_dict:
         return course_lookup_dict[course_name]
@@ -222,9 +222,9 @@ def recommend_CSE(taken_courses, cse_courses, list_c_cse_courses , listCLeft, to
             if not prereq_good:
                 print("Cannot take " + course)
             if course in list_c_cse_courses and prereq_good:
-                listCRecommendations.append({"course_code": course, "course_title": list_c_cse_courses[course]})
+                listCRecommendations.append({"course_code": course, "course_title": list_c_cse_courses[course] or ""})
             else:
-                totalRecommendations.append({"course_code": course, "course_title": cse_courses[course]})
+                totalRecommendations.append({"course_code": course, "course_title": cse_courses[course] or ""})
     random.shuffle(listCRecommendations)
     listCRecommendations = listCRecommendations[:listCLeft]
     random.shuffle(totalRecommendations)
@@ -254,9 +254,9 @@ def all_except_check(course_dict, taken_courses, ):
     return total 
 
 def prereq_check(taken_courses, course_code):
-    with open('./json_folder/antireq.json') as f:
+    with open(f"{PATH_PREFIX}json_folder/antireq.json") as f:
         antireqs = json.load(f)
-    with open('./json_folder/prereq.json') as f:
+    with open(f"{PATH_PREFIX}json_folder/prereq.json") as f:
         prereqs = json.load(f)
     
     if course_code not in prereqs:
@@ -282,10 +282,10 @@ def prereq_check(taken_courses, course_code):
     
 
 
-if __name__ == '__main__':
-    transcript = './json_folder/transcript.json'
+if __name__ == "__main__":
+    transcript = f"{PATH_PREFIX}json_folder/transcript.json"
     with open(transcript) as f: 
         transcriptList = json.load(f)
-    get_recommendations(transcriptList, "./json_folder/requirements.json", "./json_folder/list_a_courses.json", "./json_folder/list_b_courses.json",
-    "./json_folder/list_c_courses.json", "./json_folder/list_d_courses.json", "./json_folder/nse_courses.json",
-    "./json_folder/te_courses.json")
+    get_recommendations(transcriptList, f"{PATH_PREFIX}json_folder/requirements.json", f"{PATH_PREFIX}json_folder/list_a_courses.json", f"{PATH_PREFIX}json_folder/list_b_courses.json",
+    f"{PATH_PREFIX}json_folder/list_c_courses.json", f"{PATH_PREFIX}json_folder/list_d_courses.json", f"{PATH_PREFIX}json_folder/nse_courses.json",
+    f"{PATH_PREFIX}json_folder/te_courses.json")
