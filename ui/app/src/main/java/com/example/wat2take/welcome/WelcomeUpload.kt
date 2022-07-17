@@ -1,12 +1,7 @@
 package com.example.wat2take.welcome
 
 import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -21,14 +16,8 @@ import androidx.navigation.NavController
 import com.example.wat2take.Global
 import com.example.wat2take.Global.Companion.APP_NAME
 
-class WelcomePage : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-}
-
 @Composable
-fun WelcomePage(navController: NavController) {
+fun WelcomeUpload(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,37 +31,27 @@ fun WelcomePage(navController: NavController) {
                             )
                         }
                     }
-                } else {
-                    null
-                }
-
+                } else null
             )
         },
         content = { padding ->
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
-            ){
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Welcome to Wat2Take!",
-                        fontSize = 36.sp,
-                        modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = "Let's take you through our features",
+                        text = "1. Upload your transcript",
                         fontSize = 20.sp,
                         modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Light
                     )
                     Button(onClick = {
-                        navController.navigate("WelcomeUpload");
+                        navController.navigate("WelcomeCourses");
                     }) {
                         Text(text = "Next", fontSize = 18.sp)
                     }

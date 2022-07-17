@@ -27,7 +27,7 @@ fun Home(navController: NavController) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Welcome to Wat2Take!",
+                text = "Hello!",
                 fontSize = 36.sp,
                 modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
                 textAlign = TextAlign.Center,

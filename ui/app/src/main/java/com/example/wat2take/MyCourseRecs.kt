@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.wat2take.TranscriptDataStore
 import com.example.wat2take.data.AcquiredCourse
 import com.example.wat2take.data.CourseRec
 import com.example.wat2take.data.RecommendationGroup
