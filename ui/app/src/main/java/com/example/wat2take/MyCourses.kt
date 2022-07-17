@@ -118,9 +118,14 @@ fun parseCourseListJSON(json: String): List<AcquiredCourse> {
     // Log.i("STRING: ", json)
     val gson = Gson()
     val type: Type = object : TypeToken<List<AcquiredCourse>>() {}.type
-    val courseList: List<AcquiredCourse> = gson.fromJson(json, type)
-    // Log.i("", courseList.toString())
-    return courseList
+    try {
+        val courseList: List<AcquiredCourse> = gson.fromJson(json, type)
+        // Log.i("", courseList.toString())
+        return courseList
+    } catch (e: Exception) {
+        Log.d("Caught Exception", e.stackTraceToString())
+        return emptyList()
+    }
 }
 
 fun courseListToJSON(courses: List<AcquiredCourse>): String {
