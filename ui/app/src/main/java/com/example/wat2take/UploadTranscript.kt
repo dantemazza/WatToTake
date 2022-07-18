@@ -97,23 +97,33 @@ fun UploadTranscript(navController: NavController) {
                 modifier = Modifier.padding(16.dp)
             ) {
                 Text(
-                    text = "Upload your University of Waterloo Transcript Here",
-                    fontSize = 36.sp,
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
+                    text = "Upload your University of Waterloo transcript here",
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold
                 )
                 Button(onClick = {
                     pickFileLauncher.launch("application/pdf")
                 }) {
-                    Text(text = "Choose File", fontSize = 18.sp)
+                    Text(text = "Choose File", fontSize = 15.sp)
                 }
             }
         }
     } else {
-        Column {
-            Text("Wat2Take requires deivce storage access in order to allow you to upload your " +
-                    "UW Transcript. Please press the button below to grant us this permission")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(0.dp, 0.dp, 0.dp, 0.dp)
+        ) {
+            Text(
+                modifier = Modifier.padding(10.dp, 0.dp, 10.dp, 0.dp),
+                textAlign = TextAlign.Center,
+                text ="Wat2Take requires device storage access in order to allow you to upload your " +
+                    "UW Transcript. Please press the button below to grant us this permission"
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = { storagePermissionState.launchMultiplePermissionRequest() }) {
                 Text("Request device storage permission")

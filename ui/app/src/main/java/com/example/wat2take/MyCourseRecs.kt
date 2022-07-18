@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wat2take.TranscriptDataStore
 import com.example.wat2take.data.AcquiredCourse
@@ -53,13 +54,23 @@ fun MyCourseRecs(navController: NavController) {
         }
     }
 
-    Column() {
+    Column(modifier = Modifier
+        .padding(bottom = 50.dp
+        )) {
         Text(text = "Course Recommendations",
             textAlign = TextAlign.Left,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp, vertical = 20.dp),
+            style = MaterialTheme.typography.h5
+        )
+        Text(text = "Below are your personally recommended courses!",
+            textAlign = TextAlign.Left,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp),
+            fontSize = 15.sp,
             style = MaterialTheme.typography.h5
         )
         LazyColumn(

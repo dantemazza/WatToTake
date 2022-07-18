@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wat2take.data.AcquiredCourse
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -44,7 +45,8 @@ fun MyCoursesList(navController: NavController) {
         if (!loadingState) {
             if(courses.size != 0){
                 Column(modifier = Modifier
-                    .padding(bottom = 50.dp)) {
+                    .padding(bottom = 50.dp
+                    )) {
                     Text(text = "My Courses",
                         textAlign = TextAlign.Left,
                         fontWeight = FontWeight.Bold,
@@ -74,7 +76,13 @@ fun MyCoursesList(navController: NavController) {
                     }
                 }
             }else{
-                Column() {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp, 0.dp, 0.dp, 0.dp)
+                    ) {
                     Text(text = "Sorry, no courses stored on this device")
                     Button(onClick = {
                         navController.navigate("uploadTranscript")
@@ -88,7 +96,17 @@ fun MyCoursesList(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ){
-                CircularProgressIndicator()
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                    Text(
+                        modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                        text = "Please be patient as Wat2Take curates your courses...",
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 }
