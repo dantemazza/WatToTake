@@ -1,5 +1,6 @@
-package com.example.wat2take
+package com.example.wat2take.welcome
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,10 +16,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
+import com.example.wat2take.Global
 
 @Composable
-fun Home(navController: NavController) {
+fun WelcomeCourses(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -32,9 +33,7 @@ fun Home(navController: NavController) {
                             )
                         }
                     }
-                } else {
-                    null
-                }
+                } else null
             )
         },
         content = { padding ->
@@ -47,26 +46,16 @@ fun Home(navController: NavController) {
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "Hello!",
-                        fontSize = 36.sp,
+                        text = "2. See your courses",
+                        fontSize = 20.sp,
                         modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 32.dp),
                         textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Light
                     )
                     Button(onClick = {
-                        navController.navigate("uploadTranscript");
+                        navController.navigate("Home");
                     }) {
-                        Text(text = "Upload my transcript", fontSize = 18.sp)
-                    }
-                    Button(onClick = {
-                        navController.navigate("myCourses");
-                    }) {
-                        Text(text = "Go to my courses", fontSize = 18.sp)
-                    }
-                    Button(onClick = {
-                        navController.navigate("courseRecs");
-                    }) {
-                        Text(text = "Go to my courses recs", fontSize = 18.sp)
+                        Text(text = "Next", fontSize = 18.sp)
                     }
                 }
             }
