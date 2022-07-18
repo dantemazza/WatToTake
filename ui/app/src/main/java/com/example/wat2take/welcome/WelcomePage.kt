@@ -31,22 +31,7 @@ class WelcomePage : ComponentActivity() {
 fun WelcomePage(navController: NavController) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = APP_NAME) },
-                navigationIcon = if (navController.previousBackStackEntry != null) {
-                    {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-                } else {
-                    null
-                }
-
-            )
+            WelcomeTopBar(navController = navController)
         },
         content = { padding ->
             Box(

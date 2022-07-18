@@ -14,11 +14,25 @@ class TranscriptDataStore(private val context: Context) {
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore("courseList")
         const val DEFAULT_COURSES_VAL = "[]"
+        const val TUTORIAL_APP_START_DESTINATION = "welcomePage"
+        const val DEFAULT_APP_START_DESTINATION = "home"
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
         val MY_COURSES_LOADING = booleanPreferencesKey("myCoursesLoadingPrefKey")
         val STORAGE_PERMISSIONS_GRANTED = booleanPreferencesKey("transcriptUploadStoragePermission")
         val MY_COURSE_RECS_KEY = stringPreferencesKey("courseRecs")
+        val APP_START_DESTINATION = stringPreferencesKey("appStartDestination")
     }
+
+    suspend fun setAppStartDestination(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[APP_START_DESTINATION] = value
+        }
+    }
+
+    val getAppStartDestination = context.dataStore.data
+        .map { preferences ->
+            preferences[APP_START_DESTINATION] ?: TUTORIAL_APP_START_DESTINATION
+        }
 
     suspend fun setLoadingKey(key: Boolean) {
         context.dataStore.edit { preferences ->

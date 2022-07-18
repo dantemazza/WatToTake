@@ -11,30 +11,24 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wat2take.Global
+import com.example.wat2take.TranscriptDataStore
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeCourses(navController: NavController) {
+    val context = LocalContext.current
+    val dataStore = TranscriptDataStore(context)
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = Global.APP_NAME) },
-                navigationIcon = if (navController.previousBackStackEntry != null) {
-                    {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-                } else null
-            )
+            WelcomeTopBar(navController = navController)
         },
         content = { padding ->
             Box(
@@ -53,9 +47,14 @@ fun WelcomeCourses(navController: NavController) {
                         fontWeight = FontWeight.Light
                     )
                     Button(onClick = {
+                        GlobalScope.launch {
+                            dataStore.setAppStartDestination(
+                                TranscriptDataStore.DEFAULT_APP_START_DESTINATION
+                            )
+                        }
                         navController.navigate("Home");
                     }) {
-                        Text(text = "Next", fontSize = 18.sp)
+                        Text(text = "Finish", fontSize = 18.sp)
                     }
                 }
             }

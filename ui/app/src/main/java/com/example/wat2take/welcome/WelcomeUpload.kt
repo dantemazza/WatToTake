@@ -20,19 +20,7 @@ import com.example.wat2take.Global.Companion.APP_NAME
 fun WelcomeUpload(navController: NavController) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = APP_NAME) },
-                navigationIcon = if (navController.previousBackStackEntry != null) {
-                    {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-                } else null
-            )
+            WelcomeTopBar(navController = navController)
         },
         content = { padding ->
             Box(
