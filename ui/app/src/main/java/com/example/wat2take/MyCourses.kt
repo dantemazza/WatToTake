@@ -6,16 +6,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.wat2take.data.AcquiredCourse
@@ -44,11 +43,24 @@ fun MyCoursesList(navController: NavController) {
 
         if (!loadingState) {
             if(courses.size != 0){
-                Column() {
-                    Button(onClick = {
-                        GlobalScope.launch { dataStore.clearCourses() }
-                    }) {
-                        Text(text = "Clear courses")
+                Column(modifier = Modifier
+                    .padding(bottom = 50.dp)) {
+                    Text(text = "My Courses",
+                        textAlign = TextAlign.Left,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 20.dp),
+                        style = MaterialTheme.typography.h5
+                    )
+                    Row(modifier = Modifier
+                        .padding(horizontal = 24.dp)) {
+                        Button(
+                            onClick = {
+                                GlobalScope.launch { dataStore.clearCourses() }
+                            }) {
+                            Text(text = "Clear courses")
+                        }
                     }
                     LazyColumn(
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
