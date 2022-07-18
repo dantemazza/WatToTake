@@ -8,7 +8,7 @@ sealed class BottomNavItem(
     @DrawableRes val icon: Int,
     val navRoute: String){
 
-    object MyCourses : BottomNavItem("My Courses", R.drawable.ic_courses,"myCourses")
-    object MyCourseRecs: BottomNavItem("My Course Recs", R.drawable.ic_course_recs,"courseRecs")
-    object UploadTranscript: BottomNavItem("Upload Transcript", R.drawable.ic_transcript,"uploadTranscript")
+    object MyCourses : BottomNavItem("Courses", R.drawable.ic_courses,"myCourses")
+    object MyCourseRecs: BottomNavItem("Recommendations", R.drawable.ic_course_recs,"courseRecs")
+    object UploadTranscript: BottomNavItem("Upload", R.drawable.ic_transcript,"uploadTranscript")
 }

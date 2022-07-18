@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.wat2take.Global.Companion.SERVER_URL
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.gson.JsonParser
@@ -168,7 +169,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
         .build();
 
     val file = File(filePath)
-    val serverUrl = "https://99a7-192-159-178-206.ngrok.io/transcript"
+    val serverUrl = SERVER_URL
     //val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
 //    val serverUrl = "https://ptsv2.com/t/2qrpx-1657916021/post"
 //    val serverUrl = "https://wattotake.herokuapp.com/transcript"
