@@ -22,7 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wat2take.Global.Companion.SERVER_URL
-import com.example.wat2take.viewmodels.TranscriptDataStore
+import com.example.wat2take.viewmodels.AppDataStore
+import com.example.wat2take.viewmodels.CourseRecsViewModel
+import com.example.wat2take.viewmodels.CoursesViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.gson.JsonParser
@@ -44,7 +46,10 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun UploadTranscript(navController: NavController) {
     val context = LocalContext.current
-    val dataStore = TranscriptDataStore(context)
+
+    val appDataStore = AppDataStore(context)
+    val coursesDataStore = CoursesViewModel(context)
+    val courseRecsDataStore = CourseRecsViewModel(context)
 
     val pickFileLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()
@@ -75,9 +80,9 @@ fun UploadTranscript(navController: NavController) {
                     Log.e("File Path URI Error", "Could not retreive file path from URI")
                 }
             }
-            sendFile(path, dataStore)
+            sendFile(path, appDataStore, coursesDataStore, courseRecsDataStore)
             GlobalScope.launch {
-                dataStore.setLoadingKey(true)
+                appDataStore.setAppLoading(true)
             }
             navController.navigate("myCourses") // Navigate to courses and activate loading spinner
         }
@@ -171,7 +176,12 @@ private fun copyFileToInternalStorage(uri: Uri, newDirName: String, context: Con
     return output.path
 }
 
-fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
+fun sendFile(
+    filePath: String,
+    appDataStore: AppDataStore,
+    courseDataStore: CoursesViewModel,
+    courseRecsDataStore: CourseRecsViewModel
+) {
     val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
@@ -201,7 +211,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
         override fun onFailure(call: Call, e: IOException) {
             e.printStackTrace()
             GlobalScope.launch {
-                dataStore.setLoadingKey(false)
+                appDataStore.setAppLoading(false)
                 val cause = e.cause
                 val errorString = if(cause is ConnectException){
                     "Cannot connect to the server"
@@ -209,7 +219,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                     "Something went wrong with our server. " +
                             "Please ensure the PDF file you are sending is not encrypted"
                 }
-                dataStore.setServerError(errorString)
+                appDataStore.setNetworkError(errorString)
             }
         }
 
@@ -217,7 +227,7 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
             response.use {
                 if (!response.isSuccessful) {
                     GlobalScope.launch {
-                        dataStore.setLoadingKey(false)
+                        appDataStore.setAppLoading(false)
                     }
                     throw IOException("Unexpected code $response")
                 }
@@ -237,12 +247,13 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                     Log.i("Response Course List JSON", courseListJson.toString())
                     Log.i("Response Course List Recs JSON", courseRecsListJsonArray.toString())
                     GlobalScope.launch {
-                        dataStore.saveCourseList(courseListJson.toString(), courseRecsListJsonArray.toString())
-                        dataStore.setLoadingKey(false)
+                        courseDataStore.saveCourseList(courseListJson.toString())
+                        courseRecsDataStore.saveCoursRecsList(courseRecsListJsonArray.toString())
+                        appDataStore.setAppLoading(false)
                     }
                 } catch (e: Exception) {
                     GlobalScope.launch {
-                        dataStore.setServerError("Error parsing JSON response from server")
+                        appDataStore.setNetworkError("Error parsing JSON response from server")
                     }
                 }
             }

@@ -15,9 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.wat2take.viewmodels.TranscriptDataStore
 import com.example.wat2take.navigation.BottomNav
 import com.example.wat2take.ui.theme.Wat2TakeTheme
+import com.example.wat2take.viewmodels.AppDataStore
 import com.example.wat2take.welcome.WelcomeCourses
 import com.example.wat2take.welcome.WelcomePage
 import com.example.wat2take.welcome.WelcomeRecs
@@ -37,10 +37,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main() {
     val context = LocalContext.current
-    val dataStore = TranscriptDataStore(context)
+    val dataStore = AppDataStore(context)
     val appStartDestination = dataStore
         .getAppStartDestination
-        .collectAsState(initial = TranscriptDataStore.TUTORIAL_APP_START_DESTINATION).value
+        .collectAsState(initial = AppDataStore.TUTORIAL_APP_START_DESTINATION).value
 
     LaunchedEffect(Unit, block = {
         Log.i("Launched Effect", "called")

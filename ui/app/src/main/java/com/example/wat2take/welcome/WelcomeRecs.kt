@@ -18,14 +18,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wat2take.R
-import com.example.wat2take.viewmodels.TranscriptDataStore
+import com.example.wat2take.viewmodels.AppDataStore
+import com.example.wat2take.viewmodels.CoursesViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun WelcomeRecs(navController: NavController) {
     val context = LocalContext.current
-    val dataStore = TranscriptDataStore(context)
+    val dataStore = AppDataStore(context)
     Scaffold(
         topBar = {
             WelcomeTopBar(navController = navController)
@@ -59,7 +60,7 @@ fun WelcomeRecs(navController: NavController) {
                     Button(onClick = {
                         GlobalScope.launch {
                             dataStore.setAppStartDestination(
-                                TranscriptDataStore.DEFAULT_APP_START_DESTINATION
+                                AppDataStore.DEFAULT_APP_START_DESTINATION
                             )
                         }
                         navController.navigate("myCourses");
