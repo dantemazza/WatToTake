@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.Color
 class Global: Application() {
     companion object {
         var APP_NAME = "Wat2Take"
-        var START_DESTINATION = "myCourses" // "home" for home and "welcomePage" for welcome
         var WATERLOO_YELLOW = Color.hsl(46f, 1f, 0.65f)
         var SERVER_URL = "https://b804-192-159-178-206.ngrok.io/transcript"
     }
