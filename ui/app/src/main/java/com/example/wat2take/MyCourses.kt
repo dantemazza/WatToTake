@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,17 +34,45 @@ fun MyCoursesList(navController: NavController) {
 
     val dataStore = TranscriptDataStore(context)
 
-    var courseListJson = dataStore.getCourseList.collectAsState(
+    val courseListJson = dataStore.getCourseList.collectAsState(
         initial = TranscriptDataStore.DEFAULT_COURSES_VAL
     ).value;
-    var courses = parseCourseListJSON(courseListJson)
+    val courses = parseCourseListJSON(courseListJson)
 
     // Loading
-    var loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
+    val loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
     Log.i("Loading", loadingState.toString())
 
+    val error = dataStore.getServerError.collectAsState(initial = null).value
+    Log.i("error string", error ?: "")
+
         if (!loadingState) {
-            if(courses.size != 0){
+            if(error != null && error != ""){
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ){
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                            text = "ERROR:",
+                            fontSize = 32.sp,
+                            textAlign = TextAlign.Center,
+                            color = Color.Red,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                            text = error,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            color = Color.Red
+                        )
+                    }
+                }
+            } else if (courses.size != 0) {
                 Column(modifier = Modifier
                     .padding(bottom = 50.dp
                     )) {
@@ -103,7 +132,7 @@ fun MyCoursesList(navController: NavController) {
                     Text(
                         modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
                         text = "Please be patient as Wat2Take curates your courses...",
-                        fontSize = 15.sp,
+                        fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     )
                 }

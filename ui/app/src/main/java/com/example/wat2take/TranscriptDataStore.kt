@@ -18,6 +18,7 @@ class TranscriptDataStore(private val context: Context) {
         const val DEFAULT_APP_START_DESTINATION = "myCourses"
         val COURSE_LIST_KEY = stringPreferencesKey("courses")
         val MY_COURSES_LOADING = booleanPreferencesKey("myCoursesLoadingPrefKey")
+        val SERVER_ERROR_KEY = stringPreferencesKey("serverErrorKey")
         val STORAGE_PERMISSIONS_GRANTED = booleanPreferencesKey("transcriptUploadStoragePermission")
         val MY_COURSE_RECS_KEY = stringPreferencesKey("courseRecs")
         val APP_START_DESTINATION = stringPreferencesKey("appStartDestination")
@@ -43,6 +44,17 @@ class TranscriptDataStore(private val context: Context) {
     val getLoadingKey = context.dataStore.data
         .map { preferences ->
             preferences[MY_COURSES_LOADING] ?: false
+        }
+
+    suspend fun setServerError(value: String) {
+        context.dataStore.edit { preferences ->
+            preferences[SERVER_ERROR_KEY] = value
+        }
+    }
+
+    val getServerError = context.dataStore.data
+        .map { preferences ->
+            preferences[SERVER_ERROR_KEY]
         }
 
     suspend fun setStoragePermissionGranted(value: Boolean) {
