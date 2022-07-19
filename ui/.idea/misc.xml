@@ -16,10 +16,13 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_my_network.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_upload_transcript.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_welcome_transcript_background.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_my_courses.xml" value="0.2833333333333333" />
         <entry key="app/src/main/res/layout/welcome.xml" value="0.29739583333333336" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_welcome_transcript.xml" value="0.1" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_welcome_transcript_round.xml" value="0.1" />
       </map>
     </option>
   </component>

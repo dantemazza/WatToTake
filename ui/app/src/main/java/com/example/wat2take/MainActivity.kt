@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
@@ -29,6 +30,7 @@ import com.example.wat2take.navigation.BottomNavItem
 import com.example.wat2take.ui.theme.Wat2TakeTheme
 import com.example.wat2take.welcome.WelcomeCourses
 import com.example.wat2take.welcome.WelcomePage
+import com.example.wat2take.welcome.WelcomeRecs
 import com.example.wat2take.welcome.WelcomeUpload
 
 class MainActivity : ComponentActivity() {
@@ -58,8 +60,10 @@ fun Main() {
                 composable("welcomePage") { WelcomePage(navController) }
                 composable("welcomeUpload") { WelcomeUpload(navController) }
                 composable("welcomeCourses") { WelcomeCourses(navController) }
+                composable("welcomeRecs") { WelcomeRecs(navController) }
+
                 // Main Pages
-                composable("home") { Home(navController) }
+                composable("home") { MyCoursesList(navController) }
                 composable("myCourses") { MyCoursesList(navController) }
                 composable("uploadTranscript") { UploadTranscript(navController) }
                 composable("courseRecs") { MyCourseRecs(navController = navController) }

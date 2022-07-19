@@ -1,11 +1,11 @@
 package com.example.wat2take.welcome
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,14 +17,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.wat2take.Global
 import com.example.wat2take.R
 import com.example.wat2take.TranscriptDataStore
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun WelcomeCourses(navController: NavController) {
+fun WelcomeRecs(navController: NavController) {
     val context = LocalContext.current
     val dataStore = TranscriptDataStore(context)
     Scaffold(
@@ -44,14 +43,14 @@ fun WelcomeCourses(navController: NavController) {
                         modifier = Modifier.size(250.dp, 400.dp)
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.courses),
+                            painter = painterResource(id = R.drawable.recommendations),
                             contentDescription = "",
                             modifier = Modifier.fillMaxHeight(),
                             contentScale = ContentScale.Crop
                         )
                     }
                     Text(
-                        text = "2. See the courses you have already taken",
+                        text = "3. Wat2Take then gives you course recommendations, it's as easy as that!",
                         fontSize = 20.sp,
                         modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 32.dp),
                         textAlign = TextAlign.Center,
@@ -63,9 +62,9 @@ fun WelcomeCourses(navController: NavController) {
                                 TranscriptDataStore.DEFAULT_APP_START_DESTINATION
                             )
                         }
-                        navController.navigate("welcomeRecs");
+                        navController.navigate("myCourses");
                     }) {
-                        Text(text = "Next", fontSize = 18.sp)
+                        Text(text = "Finish", fontSize = 18.sp)
                     }
                 }
             }
