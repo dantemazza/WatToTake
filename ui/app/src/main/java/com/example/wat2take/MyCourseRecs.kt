@@ -69,7 +69,7 @@ fun MyCourseRecs(navController: NavController) {
             textAlign = TextAlign.Left,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 24.dp, vertical = 5.dp),
             fontSize = 15.sp,
             style = MaterialTheme.typography.h5
         )

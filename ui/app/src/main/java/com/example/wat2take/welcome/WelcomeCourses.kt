@@ -52,7 +52,7 @@ fun WelcomeCourses(navController: NavController) {
                                 TranscriptDataStore.DEFAULT_APP_START_DESTINATION
                             )
                         }
-                        navController.navigate("Home");
+                        navController.navigate("myCourses");
                     }) {
                         Text(text = "Finish", fontSize = 18.sp)
                     }

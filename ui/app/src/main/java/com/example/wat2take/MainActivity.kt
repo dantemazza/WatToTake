@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
@@ -59,7 +60,7 @@ fun Main() {
                 composable("welcomeUpload") { WelcomeUpload(navController) }
                 composable("welcomeCourses") { WelcomeCourses(navController) }
                 // Main Pages
-                composable("home") { Home(navController) }
+                composable("home") { MyCoursesList(navController) }
                 composable("myCourses") { MyCoursesList(navController) }
                 composable("uploadTranscript") { UploadTranscript(navController) }
                 composable("courseRecs") { MyCourseRecs(navController = navController) }
