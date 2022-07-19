@@ -6,13 +6,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,6 +23,8 @@ import com.example.wat2take.data.CourseRec
 import com.example.wat2take.data.RecommendationGroup
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 import kotlin.math.exp
 
@@ -54,34 +54,86 @@ fun MyCourseRecs(navController: NavController) {
         }
     }
 
-    Column(modifier = Modifier
-        .padding(bottom = 50.dp
-        )) {
-        Text(text = "Course Recommendations",
-            textAlign = TextAlign.Left,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 20.dp),
-            style = MaterialTheme.typography.h5
-        )
-        Text(text = "Below are your personally recommended courses!",
-            textAlign = TextAlign.Left,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 5.dp),
-            fontSize = 15.sp,
-            style = MaterialTheme.typography.h5
-        )
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(
-                items = courses,
-                itemContent = {
-                    CourseRecGroupListItem(verboseCourseRec = it)
+    val loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
+    Log.i("Loading", loadingState.toString())
+
+    val error = dataStore.getServerError.collectAsState(initial = null).value
+    Log.i("error string", error ?: "")
+
+    if (!loadingState) {
+        if(error != null && error != ""){
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                        text = "ERROR:",
+                        fontSize = 28.sp,
+                        textAlign = TextAlign.Center,
+                        color = Color.Red,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                        text = error,
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        color = Color.Red
+                    )
                 }
-            )
+            }
+        }else{
+            Column(modifier = Modifier
+                .padding(bottom = 50.dp
+                )) {
+                Text(text = "Course Recommendations",
+                    textAlign = TextAlign.Left,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 20.dp),
+                    style = MaterialTheme.typography.h5
+                )
+                Text(text = "Below are your personally recommended courses!",
+                    textAlign = TextAlign.Left,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 5.dp),
+                    fontSize = 15.sp,
+                    style = MaterialTheme.typography.h5
+                )
+                LazyColumn(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(
+                        items = courses,
+                        itemContent = {
+                            CourseRecGroupListItem(verboseCourseRec = it)
+                        }
+                    )
+                }
+            }
+        }
+    } else {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ){
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator()
+                Text(
+                    modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                    text = "Please be patient as Wat2Take curates your courses...",
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }

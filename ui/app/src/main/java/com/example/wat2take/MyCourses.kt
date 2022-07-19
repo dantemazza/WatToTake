@@ -58,7 +58,7 @@ fun MyCoursesList(navController: NavController) {
                         Text(
                             modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
                             text = "ERROR:",
-                            fontSize = 32.sp,
+                            fontSize = 28.sp,
                             textAlign = TextAlign.Center,
                             color = Color.Red,
                             fontWeight = FontWeight.Bold
