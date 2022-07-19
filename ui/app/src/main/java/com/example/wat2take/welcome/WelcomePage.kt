@@ -21,12 +21,6 @@ import androidx.navigation.NavController
 import com.example.wat2take.Global
 import com.example.wat2take.Global.Companion.APP_NAME
 
-class WelcomePage : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-}
-
 @Composable
 fun WelcomePage(navController: NavController) {
     Scaffold(
