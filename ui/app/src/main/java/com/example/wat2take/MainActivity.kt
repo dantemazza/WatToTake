@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -51,6 +52,11 @@ fun Main() {
     val appStartDestination = dataStore
         .getAppStartDestination
         .collectAsState(initial = TranscriptDataStore.TUTORIAL_APP_START_DESTINATION).value
+
+    LaunchedEffect(Unit, block = {
+        Log.i("Launched Effect", "called")
+        dataStore.resetNetworkData()
+    })
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNav(navController = navController)}

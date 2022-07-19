@@ -81,7 +81,10 @@ class TranscriptDataStore(private val context: Context) {
 
     //save course list into datastore
     suspend fun saveCourseList(courseJson: String, courseRecsJson: String) {
-        context.dataStore.edit { it.clear() }
+        context.dataStore.edit {
+            it.remove(COURSE_LIST_KEY)
+            it.remove(MY_COURSE_RECS_KEY)
+        }
         context.dataStore.edit { preferences ->
             preferences[COURSE_LIST_KEY] = courseJson
             preferences[MY_COURSE_RECS_KEY] = courseRecsJson
@@ -89,8 +92,16 @@ class TranscriptDataStore(private val context: Context) {
     }
 
     suspend fun clearCourses(){
-        context.dataStore.edit { it.clear() }
+        context.dataStore.edit {
+            it.remove(COURSE_LIST_KEY)
+            it.remove(MY_COURSE_RECS_KEY)
+        }
     }
 
-
+    suspend fun resetNetworkData(){
+        context.dataStore.edit {
+            it.remove(MY_COURSES_LOADING)
+            it.remove(SERVER_ERROR_KEY)
+        }
+    }
 }
