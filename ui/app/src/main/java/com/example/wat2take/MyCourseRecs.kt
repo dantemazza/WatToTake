@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -19,14 +18,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.wat2take.TranscriptDataStore
-import com.example.wat2take.data.AcquiredCourse
-import com.example.wat2take.data.CourseRec
-import com.example.wat2take.data.RecommendationGroup
+import com.example.wat2take.viewmodels.TranscriptDataStore
+import com.example.wat2take.models.CourseRec
+import com.example.wat2take.models.RecommendationGroup
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-import kotlin.math.exp
 
 
 @Composable

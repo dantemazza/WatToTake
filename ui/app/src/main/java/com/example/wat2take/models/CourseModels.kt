@@ -1,4 +1,4 @@
-package com.example.wat2take.data
+package com.example.wat2take.models
 
 data class AcquiredCourse(
     val Course: String,

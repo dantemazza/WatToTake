@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.wat2take.R
-import com.example.wat2take.TranscriptDataStore
+import com.example.wat2take.viewmodels.TranscriptDataStore
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

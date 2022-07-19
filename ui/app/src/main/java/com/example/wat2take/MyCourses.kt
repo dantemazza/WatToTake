@@ -18,7 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.wat2take.data.AcquiredCourse
+import com.example.wat2take.models.AcquiredCourse
+import com.example.wat2take.viewmodels.TranscriptDataStore
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

@@ -1,4 +1,4 @@
-package com.example.wat2take
+package com.example.wat2take.viewmodels
 
 import android.content.Context
 import androidx.datastore.core.DataStore
