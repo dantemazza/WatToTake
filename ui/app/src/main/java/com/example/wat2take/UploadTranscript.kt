@@ -36,6 +36,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.net.ConnectException
 import java.util.concurrent.TimeUnit
 
 
@@ -141,10 +142,8 @@ private fun copyFileToInternalStorage(uri: Uri, newDirName: String, context: Con
     )!!
 
     val nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-    val sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE)
     returnCursor.moveToFirst()
     val name = returnCursor.getString(nameIndex)
-    val size = java.lang.Long.toString(returnCursor.getLong(sizeIndex))
     val output: File
     if (newDirName != "") {
         val dir: File = File(context.getFilesDir().toString() + "/" + newDirName)
@@ -181,15 +180,16 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
 
     val file = File(filePath)
     val serverUrl = SERVER_URL
-    //val serverUrl = "https://7504-192-159-178-206.ngrok.io/transcript"
-//    val serverUrl = "https://ptsv2.com/t/2qrpx-1657916021/post"
-//    val serverUrl = "https://wattotake.herokuapp.com/transcript"
     val httpUrl = serverUrl.toHttpUrlOrNull()!!.newBuilder()
         .build()
 
     val formBody = MultipartBody.Builder()
         .setType(MultipartBody.FORM)
-        .addFormDataPart("file", filePath, file.asRequestBody("application/pdf; charset=utf-8".toMediaType()))
+        .addFormDataPart(
+            "file",
+            filePath,
+            file.asRequestBody("application/pdf; charset=utf-8".toMediaType())
+        )
         .build()
 
     val request = Request.Builder()
@@ -202,6 +202,14 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
             e.printStackTrace()
             GlobalScope.launch {
                 dataStore.setLoadingKey(false)
+                val cause = e.cause
+                val errorString = if(cause is ConnectException){
+                    "Cannot connect to the server"
+                }else{
+                    "Something went wrong with our server. " +
+                            "Please ensure the PDF file you are sending is not encrypted"
+                }
+                dataStore.setServerError(errorString)
             }
         }
 
@@ -233,7 +241,9 @@ fun sendFile(filePath: String, dataStore: TranscriptDataStore) {
                         dataStore.setLoadingKey(false)
                     }
                 } catch (e: Exception) {
-                    Log.d("Caught Error", e.stackTraceToString())
+                    GlobalScope.launch {
+                        dataStore.setServerError("Error parsing JSON response from server")
+                    }
                 }
             }
         }

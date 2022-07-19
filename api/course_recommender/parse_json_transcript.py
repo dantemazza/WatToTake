@@ -201,7 +201,10 @@ def recommend_TE(taken_courses, te_courses, num):
         if course not in taken_courses and bool(re.search(FOURTH_YEAR_COURSE_CODE_REGEX, course)) and prereq_good:
             courses.append({"course_code": course, "course_title": te_courses[course]})
     random.shuffle(courses)
-    courses = courses[:num]
+    if num > 0:
+        courses = courses[:num]
+    else:
+        courses = []
     return courses
 
 def recommend_NSE(taken_courses, nse_courses, num):
@@ -210,7 +213,10 @@ def recommend_NSE(taken_courses, nse_courses, num):
         if course not in taken_courses and bool(re.search(COURSE_CODE_REGEX, course)) and prereq_check(taken_courses, course):
             courses.append({"course_code": course, "course_title": nse_courses[course]})
     random.shuffle(courses)
-    courses = courses[:num]
+    if num > 0:
+        courses = courses[:num]
+    else:
+        courses = []
     return courses
 
 def recommend_CSE(taken_courses, cse_courses, list_c_cse_courses , listCLeft, totalLeft):
@@ -226,9 +232,15 @@ def recommend_CSE(taken_courses, cse_courses, list_c_cse_courses , listCLeft, to
             else:
                 totalRecommendations.append({"course_code": course, "course_title": cse_courses[course] or ""})
     random.shuffle(listCRecommendations)
-    listCRecommendations = listCRecommendations[:listCLeft]
+    if listCLeft > 0:
+        listCRecommendations = listCRecommendations[:listCLeft]
+    else:
+        listCRecommendations = []
     random.shuffle(totalRecommendations)
-    totalRecommendations = totalRecommendations[:totalLeft]
+    if totalLeft > 0:
+        totalRecommendations = totalRecommendations[:totalLeft]
+    else:
+        totalRecommendations = []
     return listCRecommendations, totalRecommendations
 
 def initialize_dict():

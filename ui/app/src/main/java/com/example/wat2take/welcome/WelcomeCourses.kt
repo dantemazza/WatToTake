@@ -1,5 +1,6 @@
 package com.example.wat2take.welcome
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -58,6 +59,7 @@ fun WelcomeCourses(navController: NavController) {
                             dataStore.setAppStartDestination(
                                 TranscriptDataStore.DEFAULT_APP_START_DESTINATION
                             )
+                            Log.i("end of tutorial","new start Destination set")
                         }
                         navController.navigate("welcomeRecs");
                     }) {
