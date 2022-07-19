@@ -86,7 +86,7 @@ fun MyCourseRecs(navController: NavController) {
                     )
                 }
             }
-        }else{
+        }else if (courses.size != 0){
             Column(modifier = Modifier
                 .padding(bottom = 50.dp
                 )) {
@@ -115,6 +115,21 @@ fun MyCourseRecs(navController: NavController) {
                             CourseRecGroupListItem(verboseCourseRec = it)
                         }
                     )
+                }
+            }
+        } else {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(0.dp, 0.dp, 0.dp, 0.dp)
+            ) {
+                Text(text = "Sorry, no courses stored on this device")
+                Button(onClick = {
+                    navController.navigate("uploadTranscript")
+                }) {
+                    Text(text = "Upload a transcript to our service")
                 }
             }
         }
