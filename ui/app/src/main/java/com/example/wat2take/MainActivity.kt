@@ -63,7 +63,6 @@ fun Main() {
                 composable("welcomeRecs") { WelcomeRecs(navController) }
 
                 // Main Pages
-                composable("home") { MyCoursesList(navController) }
                 composable("myCourses") { MyCoursesList(navController) }
                 composable("uploadTranscript") { UploadTranscript(navController) }
                 composable("courseRecs") { MyCourseRecs(navController = navController) }
