@@ -30,6 +30,7 @@ import com.example.wat2take.navigation.BottomNavItem
 import com.example.wat2take.ui.theme.Wat2TakeTheme
 import com.example.wat2take.welcome.WelcomeCourses
 import com.example.wat2take.welcome.WelcomePage
+import com.example.wat2take.welcome.WelcomeRecs
 import com.example.wat2take.welcome.WelcomeUpload
 
 class MainActivity : ComponentActivity() {
@@ -59,6 +60,8 @@ fun Main() {
                 composable("welcomePage") { WelcomePage(navController) }
                 composable("welcomeUpload") { WelcomeUpload(navController) }
                 composable("welcomeCourses") { WelcomeCourses(navController) }
+                composable("welcomeRecs") { WelcomeRecs(navController) }
+
                 // Main Pages
                 composable("home") { MyCoursesList(navController) }
                 composable("myCourses") { MyCoursesList(navController) }
