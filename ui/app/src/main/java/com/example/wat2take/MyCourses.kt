@@ -19,7 +19,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.wat2take.data.AcquiredCourse
+import com.example.wat2take.models.AcquiredCourse
+import com.example.wat2take.viewmodels.AppDataStore
+import com.example.wat2take.viewmodels.CourseRecsViewModel
+import com.example.wat2take.viewmodels.CoursesViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -32,19 +35,23 @@ import java.lang.reflect.Type
 fun MyCoursesList(navController: NavController) {
     val context = LocalContext.current
 
-    val dataStore = TranscriptDataStore(context)
+    val appDataStore = AppDataStore(context)
 
-    val courseListJson = dataStore.getCourseList.collectAsState(
-        initial = TranscriptDataStore.DEFAULT_COURSES_VAL
+    val coursesDataStore = CoursesViewModel(context)
+    val courseRecsDataStore = CourseRecsViewModel(context)
+
+    val courseListJson = coursesDataStore.getCourseList.collectAsState(
+        initial = CoursesViewModel.DEFAULT_COURSES_VAL
     ).value;
     val courses = parseCourseListJSON(courseListJson)
 
     // Loading
-    val loadingState = dataStore.getLoadingKey.collectAsState(initial = false).value
+    val loadingState = appDataStore.getAppLoading.collectAsState(initial = false).value
     Log.i("Loading", loadingState.toString())
 
-    val error = dataStore.getServerError.collectAsState(initial = null).value
-    Log.i("error string", error ?: "")
+    val error = appDataStore.getNetworkError.collectAsState(initial = null).value
+
+    Log.i("errorState", error ?: "")
 
         if (!loadingState) {
             if(error != null && error != ""){
@@ -88,7 +95,10 @@ fun MyCoursesList(navController: NavController) {
                         .padding(horizontal = 24.dp)) {
                         Button(
                             onClick = {
-                                GlobalScope.launch { dataStore.clearCourses() }
+                                GlobalScope.launch {
+                                    coursesDataStore.clearCourses()
+                                    courseRecsDataStore.clearCourseRecs()
+                                }
                             }) {
                             Text(text = "Clear courses")
                         }
